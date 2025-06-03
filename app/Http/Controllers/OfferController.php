@@ -14,28 +14,63 @@ class OfferController extends Controller
 
     public function index()
     {
-        $offers = Offer::where('is_validated', true)->get();
+        $offers = Offer::where('is_validated', true)
+                      ->where('is_published', true)
+                      ->get();
         return view('offers.index', compact('offers'));
     }
 
-    // Si tu souhaites gérer l'enregistrement d'une offre
+    /**
+     * Enregistrer une nouvelle offre
+     */
     public function store(Request $request)
     {
         // Validation des données
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            // autres règles...
+            'description' => 'required|string|min:300',
+            'type' => 'required|string',
+            'sector' => 'required|string',
+            'budget' => 'nullable|numeric',
+            'deadline' => 'required|date',
+            'duration' => 'nullable|string',
+            'required_skills' => 'required|string',
+            'company' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'required|string',
+            'region' => 'required|string',
         ]);
 
-        // Création d'une nouvelle offre (non validée par défaut)
-        Offer::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'is_validated' => false, // ou true si tu veux auto-valider
+        // Déterminer si l'offre est publiée directement ou sauvegardée comme brouillon
+        $isPublished = $request->action === 'publish';
+
+        // Création d'une nouvelle offre
+        $offer = Offer::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'type' => $validated['type'],
+            'sector' => $validated['sector'],
+            'budget' => $validated['budget'],
+            'deadline' => $validated['deadline'],
+            'duration' => $validated['duration'],
+            'required_skills' => $validated['required_skills'],
+            'company' => $validated['company'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'region' => $validated['region'],
+            'user_id' => auth()->id(),
+            'is_published' => $isPublished,
+            'is_validated' => false, // Les offres doivent être validées par un administrateur
+            'created_at' => now(),
         ]);
 
-        return redirect()->route('offers.index')->with('success', 'Offre créée avec succès !');
+        // Message selon l'action effectuée
+        $message = $isPublished 
+            ? 'Votre offre a été soumise avec succès et sera publiée après validation par un administrateur.' 
+            : 'Votre offre a été sauvegardée comme brouillon.'; 
+
+        // Rediriger vers la page d'accueil au lieu d'offers.index qui n'existe pas
+        return redirect()->route('home')->with('success', $message);
     }
 public function archive(Request $request)
 {

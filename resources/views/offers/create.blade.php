@@ -141,7 +141,25 @@
             </div>
 
             <!-- Form Sections -->
-            <form class="divide-y divide-gray-200">
+            <form method="POST" action="/publish-offer" class="divide-y divide-gray-200" id="offerForm" enctype="multipart/form-data">
+                @csrf
+                
+                @if ($errors->any())
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                    <p class="font-bold">Veuillez corriger les erreurs suivantes :</p>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                
+                @if(session('success'))
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                    {{ session('success') }}
+                </div>
+                @endif
                 <!-- Section 1: Basic Info -->
                 <div class="form-card p-6">
                     <h2 class="text-xl font-semibold text-purple-800 mb-6 flex items-center">
@@ -151,38 +169,40 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Titre de l'offre *</label>
-                            <input type="text" required 
+                            <input type="text" name="title" required 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
-                                   placeholder="Ex: Construction école primaire">
+                                   placeholder="Ex: Développement d'une application mobile">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Type d'offre *</label>
-                            <select required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
-                                <option value="">Sélectionnez...</option>
-                                <option>Public</option>
-                                <option>Privé</option>
-                                <option>International</option>
+                            <select name="type" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
+                                <option value="">Sélectionnez un type...</option>
+                                <option value="public">Public</option>
+                                <option value="prive">Privé</option>
+                                <option value="international">International</option>
                             </select>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité *</label>
-                            <select required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
-                                <option value="">Sélectionnez...</option>
-                                <option>BTP & Construction</option>
-                                <option>Informatique & Télécom</option>
-                                <option>Santé</option>
-                                <option>Éducation</option>
-                                <option>Agriculture</option>
-                                <option>Énergie</option>
-                                <option>Transport</option>
+                            <select name="sector" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
+                                <option value="">Sélectionnez un secteur...</option>
+                                <option value="informatique">Informatique & Télécommunications</option>
+                                <option value="construction">Construction & BTP</option>
+                                <option value="sante">Santé</option>
+                                <option value="energie">Énergie</option>
+                                <option value="agriculture">Agriculture</option>
+                                <option value="transport">Transport & Logistique</option>
+                                <option value="finance">Services Financiers</option>
+                                <option value="education">Éducation & Formation</option>
+                                <option value="autre">Autre</option>
                             </select>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Budget estimé (FCFA)</label>
-                            <input type="number" 
+                            <input type="number" name="budget" 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                    placeholder="Ex: 5000000">
                         </div>
@@ -197,7 +217,7 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Description détaillée *</label>
-                        <textarea required rows="8"
+                        <textarea name="description" rows="8" required
                                   class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none description-box"
                                   placeholder="Décrivez en détail votre projet, les spécifications techniques, les objectifs, les livrables attendus et toute autre information pertinente..."></textarea>
                         <p class="text-xs text-gray-500 mt-1">Minimum 300 caractères</p>
@@ -213,20 +233,20 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Date limite *</label>
-                            <input type="date" required 
+                            <input type="date" name="deadline" required 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Durée du projet</label>
-                            <input type="text" 
+                            <input type="text" name="duration" 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                    placeholder="Ex: 6 mois">
                         </div>
                         
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Compétences requises *</label>
-                            <textarea rows="4" required
+                            <textarea name="required_skills" rows="4" required
                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                       placeholder="Listez les compétences, certifications ou expériences spécifiques requises pour ce projet"></textarea>
                         </div>
@@ -242,43 +262,43 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'entreprise *</label>
-                            <input type="text" required 
+                            <input type="text" name="company" required 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                    value="{{ Auth::user()->company ?? '' }}">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                            <input type="email" required 
+                            <input type="email" name="email" required 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                    value="{{ Auth::user()->email }}">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
-                            <input type="tel" required 
+                            <input type="tel" name="phone" required 
                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"
                                    value="{{ Auth::user()->phone ?? '' }}">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Région *</label>
-                            <select required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
+                            <select name="region" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
                                 <option value="">Sélectionnez votre région...</option>
-                                <option>Dakar</option>
-                                <option>Diourbel</option>
-                                <option>Fatick</option>
-                                <option>Kaffrine</option>
-                                <option>Kaolack</option>
-                                <option>Kédougou</option>
-                                <option>Kolda</option>
-                                <option>Louga</option>
-                                <option>Matam</option>
-                                <option>Saint-Louis</option>
-                                <option>Sédhiou</option>
-                                <option>Tambacounda</option>
-                                <option>Thiès</option>
-                                <option>Ziguinchor</option>
+                                <option value="dakar">Dakar</option>
+                                <option value="diourbel">Diourbel</option>
+                                <option value="fatick">Fatick</option>
+                                <option value="kaffrine">Kaffrine</option>
+                                <option value="kaolack">Kaolack</option>
+                                <option value="kedougou">Kédougou</option>
+                                <option value="kolda">Kolda</option>
+                                <option value="louga">Louga</option>
+                                <option value="matam">Matam</option>
+                                <option value="saint-louis">Saint-Louis</option>
+                                <option value="sedhiou">Sédhiou</option>
+                                <option value="tambacounda">Tambacounda</option>
+                                <option value="thies">Thiès</option>
+                                <option value="ziguinchor">Ziguinchor</option>
                             </select>
                         </div>
                     </div>
@@ -294,12 +314,12 @@
                     </div>
                     
                     <div class="flex space-x-3">
-                        <button type="submit" class="bg-white hover:bg-gray-100 text-gray-700 font-semibold px-6 py-3 rounded-lg border border-gray-300 transition-colors">
+                        <button type="submit" name="action" value="save" id="saveButton" class="bg-white hover:bg-gray-100 text-gray-700 font-semibold px-6 py-3 rounded-lg border border-gray-300 transition-colors">
                             <i class="fas fa-save mr-2"></i> Sauvegarder
                         </button>
-                        <!-- <button type="submit" class="gradient-btn text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg">
+                        <button type="submit" name="action" value="publish" id="publishButton" class="gradient-btn text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg">
                             <i class="fas fa-paper-plane mr-2"></i> Publier l'offre
-                        </button> -->
+                        </button>
                     </div>
                 </div>
             </form>
@@ -405,6 +425,44 @@
                         charCounter.classList.remove('text-red-500');
                     }
                 });
+            }
+            
+            // Débogage du formulaire et assurer la soumission
+            const offerForm = document.getElementById('offerForm');
+            if (offerForm) {
+                offerForm.addEventListener('submit', function(e) {
+                    console.log('Formulaire soumis');
+                    // Assurer que le formulaire est soumis
+                    return true;
+                });
+                
+                // Ajouter des gestionnaires d'événements pour les boutons
+                const saveButton = document.getElementById('saveButton');
+                const publishButton = document.getElementById('publishButton');
+                
+                if (saveButton) {
+                    saveButton.addEventListener('click', function(e) {
+                        console.log('Bouton Sauvegarder cliqué');
+                        // Créer un champ caché pour l'action
+                        const actionInput = document.createElement('input');
+                        actionInput.type = 'hidden';
+                        actionInput.name = 'action';
+                        actionInput.value = 'save';
+                        offerForm.appendChild(actionInput);
+                    });
+                }
+                
+                if (publishButton) {
+                    publishButton.addEventListener('click', function(e) {
+                        console.log('Bouton Publier cliqué');
+                        // Créer un champ caché pour l'action
+                        const actionInput = document.createElement('input');
+                        actionInput.type = 'hidden';
+                        actionInput.name = 'action';
+                        actionInput.value = 'publish';
+                        offerForm.appendChild(actionInput);
+                    });
+                }
             }
         });
     </script>

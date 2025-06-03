@@ -13,16 +13,28 @@ class Offer extends Model
         'title',
         'description',
         'deadline',
-        'published_by',
+        'user_id',          // Au lieu de published_by
         'is_validated',
+        'is_published',     // Pour distinguer les brouillons des offres publiées
         'type',
         'sector',
         'region',
         'budget',
+        'duration',         // Durée du projet
+        'required_skills',  // Compétences requises
+        'company',          // Nom de l'entreprise
+        'email',            // Email de contact
+        'phone',            // Téléphone de contact
+        'created_at',       // Date de création manuelle
     ];
 
     protected $casts = [
         'deadline' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'is_validated' => 'boolean',
+        'is_published' => 'boolean',
+        'budget' => 'float',
     ];
 
     /**
@@ -30,7 +42,7 @@ class Offer extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'published_by');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
