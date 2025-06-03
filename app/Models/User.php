@@ -23,7 +23,7 @@ class User extends Authenticatable
     'password',
     'company',
     'phone',
-    'role', 
+    'role_id', 
 ];
 
     /**
@@ -47,5 +47,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    
+    /**
+     * Get the role that owns the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

@@ -25,7 +25,10 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // Redirection selon le rôle de l'utilisateur
-            if (Auth::user()->role === 'admin') {
+            $user = Auth::user();
+            $role = \App\Models\Role::find($user->role_id);
+        
+            if ($role && $role->name === 'admin') {
                 return redirect()->intended('/admin/dashboard');
             } else {
                 return redirect()->intended('/publish-offer');
@@ -50,13 +53,16 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
+        // Récupérer l'ID du rôle 'user'
+        $userRoleId = \App\Models\Role::where('name', 'user')->first()->id ?? 2; // Utilise l'ID 2 par défaut si le rôle 'user' n'existe pas
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'company' => $request->company,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'role' => 'user', // par défaut, nouvel utilisateur = user
+            'role_id' => $userRoleId, // par défaut, nouvel utilisateur = user
         ]);
 
         Auth::login($user);
