@@ -70,7 +70,7 @@
                 <i class="fas fa-search mr-1"></i> Offres
             </a>
             <a href="{{ url('/conseil') }}" class="text-gray-700 hover:text-purple-600 transition-colors">
-                <i >💡</i> Conseils
+                <i ></i> Conseils
             </a>
             @auth
             <a href="{{ url('/profile') }}" class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full hover:bg-purple-200 transition-colors">
@@ -357,14 +357,7 @@
                         La plateforme de référence pour les appels d'offres au Sénégal.
                     </p>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Navigation</h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ url('/') }}" class="text-purple-200 hover:text-white transition-colors">Accueil</a></li>
-                        <li><a href="{{ url('/offers') }}" class="text-purple-200 hover:text-white transition-colors">Offres</a></li>
-                        <li><a href="{{ url('/pricing') }}" class="text-purple-200 hover:text-white transition-colors">Tarifs</a></li>
-                    </ul>
-                </div>
+                
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Aide</h3>
                     <ul class="space-y-2">

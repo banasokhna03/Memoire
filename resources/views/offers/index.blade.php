@@ -283,15 +283,7 @@
                     <h3 class="text-lg font-semibold mb-4">AppelOffresSN</h3>
                     <p class="text-purple-200 text-sm">La plateforme de référence pour les appels d'offres au Sénégal, connectant entreprises et opportunités.</p>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Navigation</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-purple-200 hover:text-white transition-colors">Accueil</a></li>
-                        <li><a href="#" class="text-purple-200 hover:text-white transition-colors">Offres</a></li>
-                        <li><a href="#" class="text-purple-200 hover:text-white transition-colors">Publier une offre</a></li>
-                        <li><a href="#" class="text-purple-200 hover:text-white transition-colors">Tarifs</a></li>
-                    </ul>
-                </div>
+                
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Ressources</h3>
                     <ul class="space-y-2">
