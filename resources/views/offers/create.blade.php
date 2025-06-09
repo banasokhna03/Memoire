@@ -317,9 +317,6 @@
                         <button type="submit" name="action" value="save" id="saveButton" class="bg-white hover:bg-gray-100 text-gray-700 font-semibold px-6 py-3 rounded-lg border border-gray-300 transition-colors">
                             <i class="fas fa-save mr-2"></i> Sauvegarder
                         </button>
-                        <button type="submit" name="action" value="publish" id="publishButton" class="gradient-btn text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-md hover:shadow-lg">
-                            <i class="fas fa-paper-plane mr-2"></i> Publier l'offre
-                        </button>
                     </div>
                 </div>
             </form>

@@ -78,7 +78,7 @@
                                 <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'transform rotate-180': offerOpen }"></i>
                             </button>
                             <div x-show="offerOpen" class="mt-1 space-y-1 pl-12">
-                                <a href="#" @click="currentTab = 'pendingOffers'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Offres en Attente <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full ml-1">12</span></a>
+                                <a href="#" @click="currentTab = 'pendingOffers'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Offres en Attente @if(isset($pendingOffersCount) && $pendingOffersCount > 0)<span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full ml-1">{{ $pendingOffersCount }}</span>@endif</a>
                                 <a href="#" @click="currentTab = 'activeOffers'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Offres Actives</a>
                                 <a href="#" @click="currentTab = 'archivedOffers'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Archive</a>
                             </div>
@@ -167,8 +167,8 @@
                                 <button class="bg-purple-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-700">
                                     <i class="fas fa-download mr-2"></i> Exporter
                                 </button>
-                                <button x-show="currentTab === 'pendingOffers'" class="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600 blink-warning">
-                                    <i class="fas fa-exclamation-triangle mr-2"></i> 12 en attente
+                                <button x-show="currentTab === 'pendingOffers'" class="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600 blink-warning" @if(!isset($pendingOffersCount) || $pendingOffersCount == 0) style="display: none;" @endif>
+                                    <i class="fas fa-exclamation-triangle mr-2"></i> {{ $pendingOffersCount ?? '0' }} en attente
                                 </button>
                             </div>
                         </div>
@@ -203,6 +203,139 @@
                             </div>
                             <!-- More stat cards... -->
                         </div>
+
+                        <!-- Section Offres en Attente -->
+                        <div class="mt-8 mb-6">
+                            <!-- Message de débogage -->
+                            @if(session('debug'))
+                            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4" role="alert">
+                                <p class="font-bold">Information de débogage:</p>
+                                <p>{{ session('debug') }}</p>
+                            </div>
+                            @endif
+
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-700">Offres en Attente de Validation</h2>
+                                @if(isset($pendingOffers) && $pendingOffers->count() > 0)
+                                    <a href="{{ route('admin.offers.pending') }}" class="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                                        Voir toutes les offres ({{ $pendingOffers->count() }})
+                                        <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                @endif
+                            </div>
+
+                            @if(session('success'))
+                            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-md shadow">
+                                {{ session('success') }}
+                            </div>
+                            @endif
+
+                            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                                @if(isset($pendingOffers) && $pendingOffers->isEmpty())
+                                    <div class="p-6 text-center">
+                                        <div class="flex flex-col items-center text-gray-500">
+                                            <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <h3 class="text-lg font-medium text-gray-900">Aucune offre en attente</h3>
+                                            <p class="mt-1 text-sm">Toutes les offres soumises ont été traitées.</p>
+                                        </div>
+                                    </div>
+                                @elseif(isset($pendingOffers) && count($pendingOffers) > 0)
+                                    <ul class="divide-y divide-gray-200">
+                                        @foreach($pendingOffers->take(5) as $offer)
+                                        <li class="px-6 py-4 hover:bg-gray-50">
+                                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                                <div class="mb-4 sm:mb-0 flex-grow min-w-0">
+                                                    <div class="flex items-center">
+                                                        <div class="bg-yellow-100 p-2 rounded-full mr-3 sm:mr-4 flex-shrink-0">
+                                                            <i class="fas fa-hourglass-half text-yellow-600"></i>
+                                                        </div>
+                                                        <div class="flex-grow min-w-0">
+                                                            <p class="text-sm font-medium text-purple-700 hover:text-purple-900 truncate" title="{{ $offer->title }}">{{ $offer->title }}</p>
+                                                            <p class="text-xs text-gray-500">
+                                                                Soumis par: <span class="font-medium">{{ $offer->user->name ?? 'N/A' }}</span> • {{ $offer->created_at->diffForHumans() }}
+                                                            </p>
+                                                            <div class="mt-1 flex flex-wrap gap-1 sm:gap-2">
+                                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                                    {{ $offer->type }}
+                                                                </span>
+                                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                    {{ $offer->sector }}
+                                                                </span>
+                                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                                    {{ $offer->region }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex flex-shrink-0 flex-wrap justify-end gap-2 mt-3 sm:mt-0 sm:ml-4">
+                                                    <button type="button" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs sm:text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500" onclick="toggleDetails('dashboard-offer-details-{{ $offer->id }}')">
+                                                        <i class="fas fa-eye mr-1 sm:mr-2"></i> Détails
+                                                    </button>
+                                                    
+                                                    <form action="{{ route('admin.offers.validate', $offer->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                                            <i class="fas fa-check mr-1 sm:mr-2"></i> Valider
+                                                        </button>
+                                                    </form>
+                                                    
+                                                    <form action="{{ route('admin.offers.reject', $offer->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs sm:text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                            <i class="fas fa-times mr-1 sm:mr-2"></i> Rejeter
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="dashboard-offer-details-{{ $offer->id }}" class="mt-4 hidden">
+                                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                    <h4 class="text-md font-semibold text-gray-800 mb-2">Description de l'offre</h4>
+                                                    <p class="text-sm text-gray-700 mb-3 leading-relaxed">{{ $offer->description }}</p>
+                                                    
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                                        <div><strong class="text-gray-600">Budget:</strong> {{ number_format($offer->budget ?? 0, 0, ',', ' ') }} FCFA</div>
+                                                        <div><strong class="text-gray-600">Date limite:</strong> {{ $offer->deadline ? \Carbon\Carbon::parse($offer->deadline)->format('d/m/Y') : 'N/A' }}</div>
+                                                        <div><strong class="text-gray-600">Durée:</strong> {{ $offer->duration ?? 'Non spécifiée' }}</div>
+                                                        <div class="md:col-span-2"><strong class="text-gray-600">Compétences:</strong> {{ $offer->required_skills ?? 'N/A' }}</div>
+                                                        <div><strong class="text-gray-600">Entreprise:</strong> {{ $offer->company_name ?? $offer->company ?? 'N/A' }}</div>
+                                                        <div><strong class="text-gray-600">Email:</strong> {{ $offer->email ?? 'N/A' }}</div>
+                                                        <div><strong class="text-gray-600">Téléphone:</strong> {{ $offer->phone ?? 'N/A' }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @if(isset($pendingOffers) && $pendingOffers->count() > 5)
+                                    <div class="px-6 py-3 bg-gray-50 text-right border-t border-gray-200">
+                                        <a href="{{ route('admin.offers.pending') }}" class="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                                            Voir toutes les {{ $pendingOffers->count() }} offres en attente <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+                                    @endif
+                                @else
+                                     <div class="p-6 text-center text-gray-500">
+                                        Aucune offre en attente pour le moment.
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- Fin Section Offres en Attente -->
+
+                        <script>
+                            // Fonction pour basculer la visibilité des détails d'offre
+                            window.toggleDetails = function(id) {
+                                const element = document.getElementById(id);
+                                if (element) {
+                                    element.classList.toggle('hidden');
+                                }
+                            };
+                        </script>
                     </template>
 
                     <!-- Users Tab -->
@@ -264,35 +397,110 @@
                         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                             <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
                                 <h3 class="text-lg leading-6 font-medium text-gray-900">Offres en Attente de Validation</h3>
-                                <p class="mt-1 text-sm text-gray-500">12 offres nécessitent votre approbation</p>
+                                <p class="mt-1 text-sm text-gray-500">{{ $pendingOffersCount ?? '0' }} offres nécessitent votre approbation</p>
                             </div>
+                            
+                            @if(session('success'))
+                            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mx-6 my-3">
+                                {{ session('success') }}
+                            </div>
+                            @endif
+                            
                             <ul class="divide-y divide-gray-200">
-                                <!-- Offer items would be dynamically generated -->
-                                <li class="px-6 py-4 hover:bg-gray-50">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <div class="bg-yellow-100 p-2 rounded-full mr-4">
-                                                <i class="fas fa-exclamation text-yellow-500"></i>
+                                @if(isset($pendingOffers) && $pendingOffers->count() > 0)
+                                    @foreach($pendingOffers as $offer)
+                                    <li class="px-6 py-4 hover:bg-gray-50">
+                                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                            <div class="mb-3 sm:mb-0">
+                                                <div class="flex items-center">
+                                                    <div class="bg-yellow-100 p-2 rounded-full mr-4 flex-shrink-0">
+                                                        <i class="fas fa-hourglass-half text-yellow-600"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-sm font-medium text-gray-900">{{ $offer->title }}</p>
+                                                        <p class="text-sm text-gray-500">
+                                                            Soumis par: {{ $offer->user->name ?? 'Utilisateur inconnu' }} • {{ $offer->created_at->diffForHumans() }}
+                                                        </p>
+                                                        <div class="mt-1 flex flex-wrap gap-1">
+                                                            @if($offer->type)
+                                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                                {{ $offer->type }}
+                                                            </span>
+                                                            @endif
+                                                            @if($offer->sector)
+                                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                {{ $offer->sector }}
+                                                            </span>
+                                                            @endif
+                                                            @if($offer->region)
+                                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                                {{ $offer->region }}
+                                                            </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-900">Construction d'une école primaire</p>
-                                                <p class="text-sm text-gray-500">Soumis par: Entreprise XYZ • 12/11/2023</p>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none" onclick="toggleDetails('dashboard-pending-{{ $offer->id }}')">
+                                                    <i class="fas fa-eye mr-1"></i> Détails
+                                                </button>
+                                                
+                                                <form action="{{ route('admin.offers.validate', $offer->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                                        <i class="fas fa-check mr-1"></i> Valider
+                                                    </button>
+                                                </form>
+                                                
+                                                <form action="{{ route('admin.offers.reject', $offer->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none">
+                                                        <i class="fas fa-times mr-1"></i> Rejeter
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
-                                        <div class="flex space-x-2">
-                                            <button class="text-green-600 hover:text-green-800">
-                                                <i class="fas fa-check"></i> Valider
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-times"></i> Rejeter
-                                            </button>
-                                            <button class="text-purple-600 hover:text-purple-800">
-                                                <i class="fas fa-eye"></i> Voir
-                                            </button>
+                                        
+                                        <!-- Détails de l'offre (initialement masqués) -->
+                                        <div id="dashboard-pending-{{ $offer->id }}" class="mt-4 hidden">
+                                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                <h4 class="text-md font-semibold text-gray-800 mb-2">Description de l'offre</h4>
+                                                <p class="text-sm text-gray-700 mb-3">{{ $offer->description }}</p>
+                                                
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                                    <div><strong class="text-gray-600">Budget:</strong> {{ number_format($offer->budget ?? 0, 0, ',', ' ') }} FCFA</div>
+                                                    <div><strong class="text-gray-600">Date limite:</strong> {{ $offer->deadline ? \Carbon\Carbon::parse($offer->deadline)->format('d/m/Y') : 'N/A' }}</div>
+                                                    <div><strong class="text-gray-600">Durée:</strong> {{ $offer->duration ?? 'Non spécifiée' }}</div>
+                                                    <div class="md:col-span-2"><strong class="text-gray-600">Compétences:</strong> {{ $offer->required_skills ?? 'N/A' }}</div>
+                                                    <div><strong class="text-gray-600">Entreprise:</strong> {{ $offer->company_name ?? $offer->company ?? 'N/A' }}</div>
+                                                    <div><strong class="text-gray-600">Email:</strong> {{ $offer->email ?? 'N/A' }}</div>
+                                                    <div><strong class="text-gray-600">Téléphone:</strong> {{ $offer->phone ?? 'N/A' }}</div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                    @endforeach
+                                @else
+                                    <li class="px-6 py-8 text-center">
+                                        <div class="flex flex-col items-center text-gray-500">
+                                            <svg class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <h3 class="text-lg font-medium text-gray-900 mb-1">Aucune offre en attente</h3>
+                                            <p class="text-sm">Toutes les offres soumises ont été traitées.</p>
+                                        </div>
+                                    </li>
+                                @endif
                             </ul>
+                            
+                            @if(isset($pendingOffers) && $pendingOffers->count() > 5)
+                            <div class="px-6 py-3 bg-gray-50 text-right border-t border-gray-200">
+                                <a href="{{ route('admin.offers.pending') }}" class="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                                    Voir toutes les {{ $pendingOffers->count() }} offres en attente <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </template>
 
