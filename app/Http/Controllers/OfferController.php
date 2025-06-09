@@ -115,4 +115,22 @@ public function conseil()
 {
     return view('offers.conseil');
 }
+
+/**
+ * Display the specified offer
+ *
+ * @param int $id
+ * @return \Illuminate\Http\Response
+ */
+public function show($id)
+{
+    $offer = Offer::findOrFail($id);
+    
+    // Only display validated and published offers to regular users
+    if (!auth()->user()?->is_admin && (!$offer->is_validated || !$offer->is_published)) {
+        abort(404);
+    }
+    
+    return view('offers.show', compact('offer'));
+}
 }

@@ -16,6 +16,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Route publique accessible sans connexion
 Route::get('/offers/archive', [OfferController::class, 'archive'])->name('offers.archive');
+Route::get('/offers/{id}', [OfferController::class, 'show'])->name('offers.show');
 
 // Route pour le profil utilisateur
 Route::get('/profile', [ UserProfileController::class, 'show'])->middleware('auth');
@@ -26,6 +27,12 @@ Route::get('/conseil', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/publish-offer', [OfferController::class, 'create'])->name('offers.create');
     Route::post('/publish-offer', [OfferController::class, 'store'])->name('offers.store');
+    
+    // Routes pour les candidatures
+    Route::get('/offers/{id}/apply', [\App\Http\Controllers\ApplicationController::class, 'create'])->name('applications.create');
+    Route::post('/offers/{id}/apply', [\App\Http\Controllers\ApplicationController::class, 'store'])->name('applications.store');
+    Route::get('/applications/success/{id}', [\App\Http\Controllers\ApplicationController::class, 'success'])->name('applications.success');
+    Route::get('/my-applications', [\App\Http\Controllers\ApplicationController::class, 'index'])->name('applications.index');
 });
 
 // Routes admin
