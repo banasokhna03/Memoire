@@ -33,7 +33,10 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/utilisateurs', [AdminController::class, 'users'])->name('admin.users');
     
-    
+    // Routes pour la gestion des offres par l'administrateur
+    Route::get('/admin/offers/pending', [AdminController::class, 'pendingOffers'])->name('admin.offers.pending');
+    Route::post('/admin/offers/{id}/validate', [AdminController::class, 'validateOffer'])->name('admin.offers.validate');
+    Route::post('/admin/offers/{id}/reject', [AdminController::class, 'rejectOffer'])->name('admin.offers.reject');
 });
 
 // Route de déconnexion
