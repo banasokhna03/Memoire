@@ -243,7 +243,7 @@
                                                 </button>
                                             </form>
                                         @endauth
-                                        <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium text-center transition-colors whitespace-nowrap">
+                                        <a href="{{ route('offers.show', $offer->id) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium text-center transition-colors whitespace-nowrap">
                                             <i class="fas fa-eye mr-1"></i> Voir détails
                                         </a>
                                     </div>

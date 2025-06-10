@@ -50,6 +50,14 @@ class User extends Authenticatable
     }
     
     /**
+     * Get the applications for the user
+     */
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+    
+    /**
      * Get the role that owns the user.
      */
     public function role()
