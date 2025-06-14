@@ -84,6 +84,23 @@
                             </div>
                         </div>
 
+                        <!-- Applications Management -->
+                        <div x-data="{ applicationOpen: false }">
+                            <button @click="applicationOpen = !applicationOpen" class="w-full flex justify-between items-center px-4 py-2 text-sm text-white hover:bg-purple-700 rounded-md">
+                                <div class="flex items-center">
+                                    <i class="fas fa-clipboard-list mr-3"></i>
+                                    Candidatures
+                                </div>
+                                <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'transform rotate-180': applicationOpen }"></i>
+                            </button>
+                            <div x-show="applicationOpen" class="mt-1 space-y-1 pl-12">
+                                <a href="{{ route('admin.applications.index') }}" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Toutes les candidatures</a>
+                                <a href="{{ route('admin.applications.index') }}?status=pending" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">En attente</a>
+                                <a href="{{ route('admin.applications.index') }}?status=accepted" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Acceptées</a>
+                                <a href="{{ route('admin.applications.index') }}?status=rejected" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Refusées</a>
+                            </div>
+                        </div>
+
                         <!-- Statistics -->
                         <a href="#" @click="currentTab = 'stats'" :class="{'bg-purple-700': currentTab === 'stats'}" class="group flex items-center px-4 py-2 text-sm text-white hover:bg-purple-700 rounded-md">
                             <i class="fas fa-chart-pie mr-3"></i>
@@ -179,31 +196,48 @@
                 <div class="mt-8 px-4 sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8">
                     <!-- Dashboard Tab -->
                     <template x-if="currentTab === 'dashboard'">
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            <!-- Stat Cards -->
-                            <div class="stat-card bg-white overflow-hidden shadow rounded-lg">
-                                <div class="p-5">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 bg-purple-100 p-3 rounded-full">
-                                            <i class="fas fa-users text-purple-600 stat-icon"></i>
-                                        </div>
-                                        <div class="ml-5 w-0 flex-1">
-                                            <dl>
-                                                <dt class="text-sm font-medium text-gray-500 truncate">Utilisateurs</dt>
-                                                <dd class="flex items-baseline">
-                                                    <div class="text-2xl font-semibold text-gray-900">1,248</div>
-                                                    <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                                                        <i class="fas fa-arrow-up mr-1"></i> 12%
-                                                    </div>
-                                                </dd>
-                                            </dl>
-                                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Statistiques rapides -->
+                            <div class="stat-card p-6 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Offres en attente</h3>
+                                    <div class="text-purple-600 bg-purple-100 p-3 rounded-full stat-icon transition-transform">
+                                        <i class="fas fa-clock"></i>
                                     </div>
                                 </div>
+                                <p class="text-3xl font-bold text-gray-900">{{ $pendingOffersCount ?? 0 }}</p>
+                                <p class="text-sm text-gray-500 mt-2">Offres nécessitant validation</p>
+                                
+                                @if(($pendingOffersCount ?? 0) > 0)
+                                    <div class="mt-4">
+                                        <a href="#" @click="currentTab = 'pendingOffers'" class="text-sm text-purple-600 hover:text-purple-800 font-medium inline-flex items-center">
+                                            Voir les détails <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
-                            <!-- More stat cards... -->
+                            
+                            <!-- Statistiques des candidatures -->
+                            <div class="stat-card p-6 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-semibold text-gray-800">Candidatures</h3>
+                                    <div class="text-blue-600 bg-blue-100 p-3 rounded-full stat-icon transition-transform">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                </div>
+                                <p class="text-3xl font-bold text-gray-900">{{ $pendingApplicationsCount ?? 0 }}</p>
+                                <p class="text-sm text-gray-500 mt-2">Candidatures en attente de traitement</p>
+                                
+                                @if(($pendingApplicationsCount ?? 0) > 0)
+                                    <div class="mt-4">
+                                        <a href="{{ route('admin.applications.index') }}" class="text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+                                            Gérer les candidatures <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
-
+                        
                         <!-- Section Offres en Attente -->
                         <div class="mt-8 mb-6">
                             <!-- Message de débogage -->
@@ -502,6 +536,80 @@
                             </div>
                             @endif
                         </div>
+                        
+                        <!-- Dernières candidatures reçues -->
+                        <div class="mt-8 bg-white shadow-md rounded-lg overflow-hidden">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <div class="flex flex-wrap items-center justify-between">
+                                    <h2 class="text-xl font-semibold text-gray-800">Candidatures récentes</h2>
+                                    <a href="{{ route('admin.applications.index') }}" class="mt-2 sm:mt-0 text-sm text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+                                        Voir toutes <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            @if(isset($recentApplications) && $recentApplications->count() > 0)
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Candidat</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Offre</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            @foreach($recentApplications as $application)
+                                                <tr>
+                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                        <div class="text-sm font-medium text-gray-900">{{ $application->user ? $application->user->name : 'Utilisateur supprimé' }}</div>
+                                                        <div class="text-xs text-gray-500">{{ $application->phone }}</div>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                        <div class="text-sm text-gray-900">{{ $application->offer->title ?? 'N/A' }}</div>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                        <div class="text-sm text-gray-500">{{ $application->created_at->format('d/m/Y H:i') }}</div>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                        @php
+                                                            $statusColors = [
+                                                                'pending' => 'bg-yellow-100 text-yellow-800',
+                                                                'accepted' => 'bg-green-100 text-green-800',
+                                                                'rejected' => 'bg-red-100 text-red-800'
+                                                            ];
+                                                            $statusText = [
+                                                                'pending' => 'En attente',
+                                                                'accepted' => 'Acceptée',
+                                                                'rejected' => 'Refusée'
+                                                            ];
+                                                        @endphp
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$application->status] }}">
+                                                            {{ $statusText[$application->status] }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                        <a href="{{ route('admin.applications.show', $application->id) }}" class="text-indigo-600 hover:text-indigo-900">Détails</a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="px-6 py-8 text-center">
+                                    <div class="flex flex-col items-center text-gray-500">
+                                        <svg class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-1">Aucune candidature récente</h3>
+                                        <p class="text-sm">Vous n'avez pas encore reçu de candidatures.</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </template>
 
                     <!-- Other tabs would follow the same pattern -->
@@ -521,6 +629,7 @@
                         'dashboard': 'Tableau de Bord',
                         'users': 'Gestion Utilisateurs',
                         'pendingOffers': 'Offres en Attente',
+                        'applications': 'Candidatures',
                         // Add other tab titles
                     };
                     return titles[tab] || 'Tableau de Bord';

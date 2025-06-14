@@ -4,6 +4,7 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserProfileController; // Assurez-vous d'importer le bon contrôleur
+use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [OfferController::class, 'index'])->name('home');
@@ -44,6 +45,12 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::get('/admin/offers/pending', [AdminController::class, 'pendingOffers'])->name('admin.offers.pending');
     Route::post('/admin/offers/{id}/validate', [AdminController::class, 'validateOffer'])->name('admin.offers.validate');
     Route::post('/admin/offers/{id}/reject', [AdminController::class, 'rejectOffer'])->name('admin.offers.reject');
+
+    // Routes pour la gestion des candidatures par l'administrateur
+    Route::get('/admin/applications', [AdminApplicationController::class, 'index'])->name('admin.applications.index');
+    Route::get('/admin/applications/{id}', [AdminApplicationController::class, 'show'])->name('admin.applications.show');
+    Route::get('/admin/applications/{id}/download-cv', [AdminApplicationController::class, 'downloadCV'])->name('admin.applications.download-cv');
+    Route::patch('/admin/applications/{id}/status', [AdminApplicationController::class, 'updateStatus'])->name('admin.applications.update-status');
 });
 
 // Route de déconnexion
