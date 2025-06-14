@@ -11,6 +11,7 @@
         .offer-card {
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
+            max-width: 100%;
         }
         .offer-card:hover {
             transform: translateY(-5px);
@@ -31,251 +32,296 @@
         .search-box {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         }
+        .offer-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .offer-title {
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+        .offer-description {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+        .scroll-message {
+            background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, rgba(124,58,237,0.1) 100%);
+            border-left: 4px solid #8b5cf6;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-purple-900 font-sans">
 
-    <!-- Nouveau Header (topbar) -->
+    <!-- Header -->
     <nav class="bg-white shadow-lg py-3 px-6 flex justify-between items-center sticky top-0 z-50">
-        <!-- Logo -->
         <div class="flex items-center space-x-2">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto">
-            <span class="text-xl font-bold text-green-600">AppelOffres<span class="text-purple-700">SN</span></span>
-        </div>
-
-        <!-- Boutons -->
+<a href="{{ url('/') }}" class="flex items-center space-x-2">
+    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto">
+    <span class="text-xl font-bold text-green-600">AppelOffres<span class="text-purple-700">SN</span></span>
+</a>        </div>
         <div class="hidden md:flex items-center space-x-6">
-            <a href="{{ url('/publish-offer') }}" class="text-purple-700 hover:text-purple-900 text-white font-semibold px-5 py-2 rounded-full transition-all flex items-center pulse-hover">
+            <a href="{{ url('/publish-offer') }}" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-full transition-all flex items-center pulse-hover">
                 <i class="fas fa-bullhorn mr-2"></i> Publier une Offre
             </a>
-            <a href="{{ url('/archive') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
-                <i class="fas fa-search mr-2"></i> Parcourir
-            </a>
-            <a href="{{ url('/login') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
-                <i class="fas fa-sign-in-alt mr-2"></i> Connexion
-            </a>
-            <a href="{{ route('admin.dashboard') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
-    <i class="fas fa-user-shield mr-2"></i> Admin
-     </a>
+            <a href="{{ route('offers.archive') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
+        <i class="fas fa-search mr-2"></i> Parcourir offres
+          </a>
+           <div class="flex items-center relative"> <div>
+                        <label for="auth-select" class="block text-sm font-medium text-gray-700 sr-only">S'identifier</label>
 
+                        <select name="auth_action" id="auth-select"
+                                class="w-auto px-4 py-2 rounded-lg border border-gray-300 input-highlight focus:outline-none text-gray-800
+                                       absolute inset-0 opacity-0 cursor-pointer z-10">
+                            <option value="" disabled selected class="default-auth-option">S'identifier</option>
+
+                            @auth
+                                <option value="{{ route('logout') }}" class="logout-option">Se déconnecter</option>
+                            @else
+                                <option value="{{ route('login') }}" class="login-option">Se connecter</option>
+                                @if (Route::has('register'))
+                                    <option value="{{ route('register') }}" class="register-option">S'inscrire</option>
+                                @endif
+                            @endauth
+                        </select>
+
+                        <div id="auth-display-button"
+ class="w-auto px-5 py-2 rounded-full input-highlight focus:outline-none text-white font-semibold text-center cursor-pointer"
+                             style="background-color:rgba(255, 255, 255, 0.68);">
+                             <p style="color:rgb(121, 71, 221);"> <i class="fas fa-user mr-2"></i>S'identifier </p>
+                        </div>
+                    </div>
+        <!--    <a href="{{ route('admin.dashboard') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
+                <i class="fas fa-user-shield mr-2"></i> Admin
+            </a>-->
         </div>
-        
-        <!-- Menu mobile -->
         <button class="md:hidden text-purple-700 focus:outline-none">
             <i class="fas fa-bars text-2xl"></i>
         </button>
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
+      <i class="fas fa-power-off mr-2"></i> Déconnexion    
+        </button>
+    </form>
     </nav>
-
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+    @csrf
+</form>
     <!-- Banner avec recherche -->
     <header class="relative bg-cover bg-center h-80" style="background-image: url('{{ asset('images/r.png') }}'); background-position: center 70%;">
-     <div class="absolute inset-0 bg-black opacity-40"></div>
-    <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
-        <div class="animate__animated animate__fadeIn">
-            <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                TROUVEZ LES MEILLEURES OFFRES AU SÉNÉGAL
-            </h1>
-            <p class="text-white text-lg md:text-xl mb-6 max-w-2xl mx-auto">
-                Accédez aux appels d'offres publics et privés en quelques clics
-            </p>
-            <center>
-                <form class="w-full max-w-3xl bg-white rounded-full search-box animate__animated animate__fadeInUp animate__delay-1s">
-                    <div class="flex flex-col md:flex-row">
-                        <div class="flex-1 flex items-center px-6 py-4">
-                            <i class="fas fa-search text-purple-500 mr-3"></i>
-                            <input type="text" placeholder="Mots-clés, secteurs..." class="w-full outline-none text-gray-700 placeholder-gray-400">
-                        </div>
-                        <div class="flex-1 flex items-center px-6 py-4 border-t md:border-t-0 md:border-l border-gray-200">
-                            <i class="fas fa-map-marker-alt text-purple-500 mr-3"></i>
-                            <input type="text" placeholder="Localisation, région..." class="w-full outline-none text-gray-700 placeholder-gray-400">
-                        </div>
-                        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-r-full font-semibold transition-colors">
-    <i class="fas fa-search mr-2"></i> Rechercher
-</button>
-
-                    </div>
-                </form>
-            </center>
-        </div>
-    </div>
-</header>
-
-
-    <!-- Contenu principal -->
-    <main class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row gap-8">
-            <!-- Filtres (sidebar) -->
-            <aside class="md:w-1/4">
-                <div class="bg-white p-6 rounded-xl shadow-md sticky top-24">
-                    <h3 class="font-bold text-lg text-purple-800 mb-4 flex items-center">
-                        <i class="fas fa-filter mr-2 text-purple-600"></i> Filtres
-                    </h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Type d'offre</label>
-                            <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500">
-                                <option>Tous types</option>
-                                <option>Public</option>
-                                <option>Privé</option>
-                                <option>International</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
-                            <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500">
-                                <option>Tous secteurs</option>
-                                <option>BTP</option>
-                                <option>Informatique</option>
-                                <option>Santé</option>
-                                <option>Éducation</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date limite</label>
-                            <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500">
-                                <option>Toutes dates</option>
-                                <option>Cette semaine</option>
-                                <option>Ce mois</option>
-                                <option>Prochains 3 mois</option>
-                            </select>
-                        </div>
-                        
-                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors">
-                            Appliquer les filtres
-                        </button>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Liste des offres -->
-            <div class="md:w-3/4">
-                <div class="flex justify-between items-center mb-8">
-                    <h1 class="text-3xl font-bold text-purple-900 flex items-center">
-                        <i class="fas fa-bullseye mr-3 text-purple-600"></i> Offres Disponibles
-                    </h1>
-                    <p class="text-purple-600 bg-purple-100 px-3 py-1 rounded-full text-sm font-medium">
-                        {{ $offers->count() }} offres trouvées
-                    </p>
-                </div>
-
-                @auth
-                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl shadow-inner mb-8 animate__animated animate__fadeIn">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <h3 class="font-bold text-lg text-purple-800 mb-2">Votre espace membre</h3>
-                            <p class="text-purple-700 text-sm">
-                                <i class="fas fa-check-circle text-green-500 mr-1"></i> Accès complet aux offres et fonctionnalités premium
-                            </p>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <form method="POST" action="{{ url('/subscribe') }}">
-                                @csrf
-                                <button class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-full transition-all flex items-center whitespace-nowrap">
-                                    <i class="fas fa-crown mr-2"></i> S'abonner
-                                </button>
-                            </form>
-                            <a href="{{ url('/my-saved-offers') }}" class="bg-white hover:bg-gray-100 text-purple-700 font-semibold py-2 px-6 rounded-full border border-purple-200 transition-all flex items-center justify-center whitespace-nowrap">
-                                <i class="fas fa-bookmark mr-2 text-purple-600"></i> Mes favoris
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endauth
-
-                @guest
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-lg">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-info-circle text-yellow-500 text-xl mt-1 mr-3"></i>
-                        </div>
-                        <div>
-                            <p class="text-yellow-800">
-                                <a href="{{ url('/login') }}" class="font-semibold underline hover:text-yellow-900">Connectez-vous</a> ou 
-                                <a href="{{ url('/register') }}" class="font-semibold underline hover:text-yellow-900">inscrivez-vous</a> pour accéder à toutes les fonctionnalités : sauvegarde d'offres, alertes personnalisées et soumission en ligne.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endguest
-
-                @if($offers->isEmpty())
-                    <div class="text-center py-12 bg-white rounded-xl shadow-sm">
-                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
-                        <h3 class="text-xl font-medium text-gray-600 mb-2">Aucune offre disponible actuellement</h3>
-                        <p class="text-gray-500 max-w-md mx-auto">Nous n'avons trouvé aucune offre correspondant à vos critères. Essayez de modifier vos filtres ou revenez plus tard.</p>
-                    </div>
-                @else
-                    <div class="grid gap-6">
-                        @foreach($offers as $offer)
-                            <div class="offer-card bg-white p-6 rounded-xl shadow-sm relative">
-                                <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                                    <div class="flex-1">
-                                        <div class="flex items-start">
-                                            <div class="bg-purple-100 p-3 rounded-lg mr-4">
-                                                <i class="fas fa-file-contract text-purple-600 text-xl"></i>
-                                            </div>
-                                            <div>
-                                                <h2 class="text-xl font-bold text-purple-900 mb-1">{{ $offer->title }}</h2>
-                                                <div class="flex flex-wrap gap-2 mb-3">
-                                                    <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
-                                                        {{ $offer->type ?? 'Non spécifié' }}
-                                                    </span>
-                                                    <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
-                                                        {{ $offer->sector ?? 'Tous secteurs' }}
-                                                    </span>
-                                                    <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full">
-                                                        <i class="far fa-clock mr-1"></i> {{ $offer->deadline ? $offer->deadline->format('d/m/Y') : 'Date limite non spécifiée' }}
-                                                    </span>
-                                                </div>
-                                                <p class="text-gray-700 line-clamp-2">{{ $offer->description }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-col sm:flex-row md:flex-col gap-2">
-                                        @auth
-                                            <form method="POST" action="{{ url('/save-offer/' . $offer->id) }}">
-                                                @csrf
-                                                <button type="submit" class="bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
-                                                    <i class="far fa-bookmark mr-1"></i> Enregistrer
-                                                </button>
-                                            </form>
-                                        @endauth
-                                        <a href="{{ route('offers.show', $offer->id) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium text-center transition-colors whitespace-nowrap">
-                                            <i class="fas fa-eye mr-1"></i> Voir détails
-                                        </a>
-                                    </div>
-                                </div>
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+            <div class="animate__animated animate__fadeIn">
+                <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                    TROUVEZ LES MEILLEURES OFFRES AU SÉNÉGAL
+                </h1>
+                <p class="text-white text-lg md:text-xl mb-6 max-w-2xl mx-auto">
+                    Accédez aux appels d'offres publics et privés en quelques clics
+                </p>
+                <center>
+                    <form class="w-full max-w-3xl bg-white rounded-full search-box animate__animated animate__fadeInUp animate__delay-1s">
+                        <div class="flex flex-col md:flex-row">
+                            <div class="flex-1 flex items-center px-6 py-4">
+                                <i class="fas fa-search text-purple-500 mr-3"></i>
+                                <input type="text" placeholder="Mots-clés, secteurs..." class="w-full outline-none text-gray-700 placeholder-gray-400">
                             </div>
-                        @endforeach
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="mt-10 flex justify-center">
-                        <nav class="flex items-center space-x-2">
-                            <a href="#" class="px-3 py-1 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                            <a href="#" class="px-3 py-1 rounded-lg bg-purple-600 text-white font-medium">1</a>
-                            <a href="#" class="px-3 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">2</a>
-                            <a href="#" class="px-3 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">3</a>
-                            <span class="px-3 py-1 text-gray-500">...</span>
-                            <a href="#" class="px-3 py-1 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">10</a>
-                            <a href="#" class="px-3 py-1 rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </nav>
-                    </div>
-                @endif
-
-                
+                            <div class="flex-1 flex items-center px-6 py-4 border-t md:border-t-0 md:border-l border-gray-200">
+                                <i class="fas fa-map-marker-alt text-purple-500 mr-3"></i>
+                                <input type="text" placeholder="Localisation, région..." class="w-full outline-none text-gray-700 placeholder-gray-400">
+                            </div>
+                            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-r-full font-semibold transition-colors">
+                                <i class="fas fa-search mr-2"></i> Rechercher
+                            </button>
+                        </div>
+                    </form>
+                </center>
             </div>
         </div>
-    </main>
+    </header>
 
-    <!-- Footer -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg flex items-center justify-between animate__animated animate__fadeIn">
+        <div class="flex items-center">
+            <i class="fas fa-info-circle text-green-600 text-xl mr-4"></i>
+            <p class="text-green-800 font-medium">
+                Pour découvrir toutes nos offres disponibles, cliquez sur ce bouton
+            </p>
+        </div>
+        <a href="{{ route('offers.archive') }}" class="text-white font-semibold px-6 py-2 rounded-lg transition-all flex items-center" style="background-color:rgb(203, 100, 45); hover:background-color:rgb(203, 100, 45);">
+            Voir toutes les offres
+        </a>
+    </div>
+</div>
+@if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto mt-4" role="alert" style="max-width: 768px;">
+            <strong class="font-bold">Succès !</strong>
+            <span class="block sm:inline">{{ session('success') }}</span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none';">
+                    <title>Fermer</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l3.029-2.651-3.029-2.651a1.2 1.2 0 1 1 1.697-1.697l2.651 3.029 2.651-3.029a1.2 1.2 0 1 1 1.697 1.697l-3.029 2.651 3.029 2.651a1.2 1.2 0 0 1 0 1.697z"/>
+                </svg>
+            </span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto mt-4" role="alert" style="max-width: 768px;">
+            <strong class="font-bold">Erreur !</strong>
+            <span class="block sm:inline">{{ session('error') }}</span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none';">
+                    <title>Fermer</title>
+                    <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l3.029-2.651-3.029-2.651a1.2 1.2 0 1 1 1.697-1.697l2.651 3.029 2.651-3.029a1.2 1.2 0 1 1 1.697 1.697l-3.029 2.651 3.029 2.651a1.2 1.2 0 0 1 0 1.697z"/>
+                </svg>
+            </span>
+        </div>
+    @endif
+<!-- Contenu principal -->
+<main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Filtres (sidebar élargie et décalée) -->
+        <aside class="md:w-1/6 ml-4">
+            <div class="bg-white p-5 rounded-xl shadow-md sticky top-24">
+                <h3 class="font-bold text-lg text-purple-800 mb-4 flex items-center">
+                    <i class="fas fa-filter mr-2 text-purple-600"></i> Filtres
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type d'offre</label>
+                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                            <option>Tous types</option>
+                            <option>Public</option>
+                            <option>Privé</option>
+                            <option>International</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
+                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                            <option>Tous secteurs</option>
+                            <option>BTP</option>
+                            <option>Informatique</option>
+                            <option>Santé</option>
+                            <option>Éducation</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date limite</label>
+                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                            <option>Toutes dates</option>
+                            <option>Cette semaine</option>
+                            <option>Ce mois</option>
+                            <option>Prochains 3 mois</option>
+                        </select>
+                    </div>
+                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+                        Appliquer
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Liste des offres (partie principale large) -->
+        <div id="offres" class="md:w-5/6">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-purple-900 flex items-center">
+                    <i class="fas fa-bullseye mr-3 text-purple-600"></i> Offres Disponibles
+                </h1>
+                <p class="text-purple-600 bg-purple-100 px-3 py-1 rounded-full text-sm font-medium">
+                </p>
+            </div>
+
+            @auth
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl shadow-inner mb-8 animate__animated animate__fadeIn">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-lg text-purple-800 mb-2">Bienvenue, {{ Auth::user()->name }} </h3>
+                    </div>
+                </div>
+            </div>
+            @endauth
+
+            @guest
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-lg">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-yellow-500 text-xl mt-1 mr-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-yellow-800">
+                            <a href="{{ url('/login') }}" class="font-semibold underline hover:text-yellow-900">Connectez-vous</a> ou 
+                            <a href="{{ url('/register') }}" class="font-semibold underline hover:text-yellow-900">inscrivez-vous</a> pour accéder à toutes les fonctionnalités : sauvegarde d'offres, alertes personnalisées et soumission en ligne.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endguest
+
+            @if($offers->isEmpty())
+                <div class="text-center py-12 bg-white rounded-xl shadow-sm">
+                    <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-medium text-gray-600 mb-2">Aucune offre disponible actuellement</h3>
+                    <p class="text-gray-500 max-w-md mx-auto">Nous n'avons trouvé aucune offre correspondant à vos critères. Essayez de modifier vos filtres ou revenez plus tard.</p>
+                </div>
+            @else
+                <div class="grid gap-6">
+                    @foreach($offers as $offer)
+                        <div class="offer-card bg-white p-6 rounded-xl shadow-sm relative">
+                            <div class="flex flex-col md:flex-row md:justify-between gap-4">
+                                <div class="flex items-start w-full">
+                                    <div class="bg-purple-100 p-3 rounded-lg mr-4 flex-shrink-0">
+                                        <i class="fas fa-file-contract text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div class="offer-content flex-grow">
+                                        <h2 class="offer-title font-bold text-purple-900 mb-1">{{ $offer->title }}</h2>
+                                        <div class="flex flex-wrap gap-2 mb-3">
+                                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                                                {{ $offer->type ?? 'Non spécifié' }}
+                                            </span>
+                                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
+                                                {{ $offer->sector ?? 'Tous secteurs' }}
+                                            </span>
+                                            <span class="bg-amber-100 text-amber-800 text-xs px-3 py-1 rounded-full">
+                                                <i class="far fa-clock mr-1"></i> {{ $offer->deadline ? $offer->deadline->format('d/m/Y') : 'Date limite non spécifiée' }}
+                                            </span>
+                                        </div>
+                                        <p class="offer-description text-gray-700">{{ $offer->description }}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-row md:flex-col gap-2 justify-end md:justify-start">
+                                    @auth
+                                        <form method="POST" action="{{ url('/save-offer/' . $offer->id) }}">
+                                            @csrf
+                                            <button type="submit" class="bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                                                <i class="far fa-bookmark mr-1"></i> Enregistrer
+                                            </button>
+                                        </form>
+                                    @endauth
+                                    <a href="{{ route('offers.show', $offer->id) }}" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm font-medium text-center transition-colors whitespace-nowrap">
+                                        <i class="fas fa-eye mr-1"></i> Voir
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                
+              
+            @endif
+        </div>
+    </div>
+</main>
+
+
+
+<!-- Footer -->
     <footer class="bg-purple-900 text-white pt-12 pb-6 mt-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -329,23 +375,63 @@
     </footer>
 
     <script>
-        // Animation au scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const offerCards = document.querySelectorAll('.offer-card');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            offerCards.forEach(card => {
-                observer.observe(card);
+        // Assurez-vous que ce script est inclus dans votre layout Blade, idéalement juste avant la balise </body>.
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Logique pour le sélecteur d'authentification
+    const authSelect = document.getElementById('auth-select');
+
+    if (authSelect) {
+        authSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const targetValue = selectedOption.value;
+
+            // Si l'option sélectionnée est "logout_action", soumettez le formulaire de déconnexion.
+            if (targetValue === 'logout_action') {
+                // Assurez-vous que le formulaire avec l'ID 'logout-form' existe dans votre HTML
+                const logoutForm = document.getElementById('logout-form');
+                if (logoutForm) {
+                    logoutForm.submit();
+                } else {
+                    console.error("Erreur: Le formulaire de déconnexion avec l'ID 'logout-form' n'a pas été trouvé.");
+                }
+            } else if (targetValue) {
+                // Pour les autres options (login, register), redirigez simplement l'utilisateur.
+                window.location.href = targetValue;
+            }
+        });
+
+        // Optionnel : Réinitialiser le select à l'option par défaut après la sélection (si pas de redirection)
+        // Utile si l'action ne quitte pas la page et que vous voulez que le "S'identifier" revienne.
+        // authSelect.value = ''; // Remettre l'option par défaut 'S'identifier'
+    }
+
+    // Le code pour l'animation au scroll (Intersection Observer)
+    const offerCards = document.querySelectorAll('.offer-card');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    offerCards.forEach(card => {
+        observer.observe(card);
+    });
+
+    // Le code pour l'animation fluide pour le défilement vers les ancres
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
             });
         });
+    });
+});
     </script>
 </body>
 </html>

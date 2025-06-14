@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Offer;
 use App\Models\Application;
+use App\Models\User; // Assurez-vous d'importer le modèle User
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -19,7 +20,8 @@ class AdminController extends Controller
                                  ->get();
 
         $pendingOffersCount = $pendingOffers->count(); // Obtenir le compte à partir de la collection
-        
+            $users = User::latest()->take(5)->get(); // Ajout des utilisateurs récents
+
         // Récupérer les candidatures récentes
         $recentApplications = Application::with(['user', 'offer'])
                               ->orderBy('created_at', 'desc')
@@ -31,7 +33,7 @@ class AdminController extends Controller
         // Débogage: ajouter un message flash pour vérifier les données (optionnel)
         session()->flash('debug', "Nombre d'offres trouvées: $pendingOffersCount");
                                  
-        return view('admin.dashboard', compact('pendingOffersCount', 'pendingOffers', 'recentApplications', 'pendingApplicationsCount'));
+        return view('admin.dashboard', compact('pendingOffersCount', 'pendingOffers', 'recentApplications', 'pendingApplicationsCount','users',));
     }
 
     public function users()

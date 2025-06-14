@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Offer extends Model
 {
@@ -67,5 +68,18 @@ class Offer extends Model
     public function getFormattedDeadlineAttribute()
     {
         return $this->deadline->format('d/m/Y');
+    }
+
+    public function usersWhoSaved()
+    {
+        return $this->belongsToMany(User::class, 'saved_offers');
+    }
+
+    public function isSavedByCurrentUser()
+    {
+        if (Auth::check()) {
+            return Auth::user()->savedOffers()->where('offer_id', $this->id)->exists();
+        }
+        return false;
     }
 }

@@ -3,7 +3,7 @@
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\UserProfileController; // Assurez-vous d'importer le bon contrôleur
+use App\Http\Controllers\UserProfileController; 
 use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,12 +41,20 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/utilisateurs', [AdminController::class, 'users'])->name('admin.users');
     
+    // Nouvelle route pour la modification d'utilisateur
+    Route::put('/admin/users/{user}', [AdminController::class, 'update'])->name('admin.users.update');
+    // Route pour afficher le formulaire de modification d'utilisateur
+    Route::get('/admin/users/{user}/edit', [AdminController::class, 'edit'])->name('admin.users.edit');
     // Routes pour la gestion des offres par l'administrateur
     Route::get('/admin/offers/pending', [AdminController::class, 'pendingOffers'])->name('admin.offers.pending');
     Route::post('/admin/offers/{id}/validate', [AdminController::class, 'validateOffer'])->name('admin.offers.validate');
     Route::post('/admin/offers/{id}/reject', [AdminController::class, 'rejectOffer'])->name('admin.offers.reject');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroy']) ->name('admin.users.destroy');
+        Route::delete('/admin/offers/{id}', [AdminController::class, 'deleteOffer'])->name('admin.offers.delete');
 
-    // Routes pour la gestion des candidatures par l'administrateur
+    // Dans le groupe de routes admin
+Route::get('/admin/offers/active', [AdminController::class, 'activeOffers'])->name('admin.offers.active');
+// Routes pour la gestion des candidatures par l'administrateur
     Route::get('/admin/applications', [AdminApplicationController::class, 'index'])->name('admin.applications.index');
     Route::get('/admin/applications/{id}', [AdminApplicationController::class, 'show'])->name('admin.applications.show');
     Route::get('/admin/applications/{id}/download-cv', [AdminApplicationController::class, 'downloadCV'])->name('admin.applications.download-cv');

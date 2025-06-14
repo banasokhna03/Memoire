@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Offer;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 class OfferController extends Controller
 {
     public function create()
@@ -16,6 +18,7 @@ class OfferController extends Controller
     {
         $offers = Offer::where('is_validated', true)
                       ->where('is_published', true)
+                      ->limit(4)
                       ->get();
         return view('offers.index', compact('offers'));
     }
@@ -65,72 +68,68 @@ class OfferController extends Controller
         ]);
 
         // Message selon l'action effectuée
-        $message = $isPublished 
-            ? 'Votre offre a été soumise avec succès et sera publiée après validation par un administrateur.' 
-            : 'Votre offre a été sauvegardée comme brouillon.'; 
+        $message = $isPublished
+            ? 'Votre offre a été soumise avec succès et sera publiée après validation par un administrateur.'
+            : 'Votre offre a été sauvegardée comme brouillon.';
 
         // Rediriger vers la page d'accueil au lieu d'offers.index qui n'existe pas
         return redirect()->route('home')->with('success', $message);
     }
-public function archive(Request $request)
-{
-    $query = Offer::whereDate('deadline', '<', Carbon::today());
 
-    // Filtre par type si précisé
-    if ($request->filled('type')) {
-        $query->where('type', $request->type);
-    }
+     public function archive(Request $request) // Il est bon de passer Request pour les filtres futurs
+    {
+        // On initialise la requête sur le modèle Offer
+        $query = Offer::query();
 
-    // Filtre par recherche si précisé
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
-        });
-    }
+        // On applique les conditions : seules les offres validées ET publiées
+        $query->where('is_validated', true)
+              ->where('is_published', true);
 
-    // Tri
-    if ($request->filled('sort')) {
-        switch ($request->sort) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'deadline':
-                $query->orderBy('deadline', 'asc');
-                break;
-            default:
-                $query->orderBy('created_at', 'desc');
-                break;
-        }
-    } else {
+        // On trie les résultats par date de création, du plus récent au plus ancien
         $query->orderBy('created_at', 'desc');
+
+        // On pagine les résultats (par exemple, 4 offres par page)
+        $offers = $query->paginate(4);
+
+        // On retourne la vue avec les offres paginées
+        return view('offers.archive', compact('offers'));// Assurez-vous que le chemin de votre vue est correct, ex: 'offers.archive' ou juste 'archive'
     }
 
-    $offers = $query->paginate(6);
-
-    return view('offers.archive', compact('offers'));
-}
-public function conseil()
-{
-    return view('offers.conseil');
-}
-
-/**
- * Display the specified offer
- *
- * @param int $id
- * @return \Illuminate\Http\Response
- */
-public function show($id)
-{
-    $offer = Offer::findOrFail($id);
-    
-    // Only display validated and published offers to regular users
-    if (!auth()->user()?->is_admin && (!$offer->is_validated || !$offer->is_published)) {
-        abort(404);
+    public function conseil()
+    {
+        return view('offers.conseil');
     }
-    
-    return view('offers.show', compact('offer'));
-}
+
+    /**
+     * Display the specified offer
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $offer = Offer::findOrFail($id);
+
+        // Only display validated and published offers to regular users
+        if (!auth()->user()?->is_admin && (!$offer->is_validated || !$offer->is_published)) {
+            abort(404);
+        }
+
+        return view('offers.show', compact('offer'));
+    }
+
+    public function toggleSave(Offer $offer)
+    {
+        $user = auth()->user();
+
+        if ($user->hasSavedOffer($offer->id)) {
+            $user->savedOffers()->detach($offer->id);
+            $saved = false;
+        } else {
+            $user->savedOffers()->attach($offer->id);
+            $saved = true;
+        }
+
+        return response()->json(['saved' => $saved]);
+    }
 }

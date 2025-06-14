@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -24,15 +25,13 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            // Redirection selon le rôle de l'utilisateur
             $user = Auth::user();
-            $role = \App\Models\Role::find($user->role_id);
-        
-            if ($role && $role->name === 'admin') {
-                return redirect()->intended('/admin/dashboard');
-            } else {
+            
+            if ($user->role_id === 1) { // 2 = admin
                 return redirect()->intended('/publish-offer');
             }
+            
+            return redirect()->intended('/admin/dashboard');
         }
 
         return back()->withErrors([
@@ -47,37 +46,31 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'phone' => 'nullable|string|max:20',
         ]);
 
-        // Récupérer l'ID du rôle 'user'
-        $userRoleId = \App\Models\Role::where('name', 'user')->first()->id ?? 2; // Utilise l'ID 2 par défaut si le rôle 'user' n'existe pas
-        
+        // Créer l'utilisateur
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'company' => $request->company,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password),
-            'role_id' => $userRoleId, // par défaut, nouvel utilisateur = user
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'password' => Hash::make($validated['password']),
+            'role_id' => Role::where('name', 'user')->first()->id ?? 2,
         ]);
 
         Auth::login($user);
 
-        return redirect('/publish-offer');
+        return redirect('/publish-offer')->with('success', 'Inscription réussie !');
     }
 
-     public function logout(Request $request)
+    public function logout(Request $request)
     {
         Auth::logout();
-
-        // Invalide la session
         $request->session()->invalidate();
-
-        // Regénère le token CSRF
         $request->session()->regenerateToken();
 
         return redirect('/login')->with('success', 'Vous êtes bien déconnecté.');
