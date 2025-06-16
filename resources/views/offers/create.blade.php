@@ -91,15 +91,15 @@
             <span class="text-xl font-bold text-green-600">AppelOffres<span class="text-purple-700">SN</span></span>
         </div>
         <div class="flex items-center space-x-4">
-            <a href="{{ url('/') }}" class="text-gray-700 hover:text-purple-600 transition-colors">
+            <a href="{{ url('/') }}" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
                 <i class="fas fa-home mr-1"></i> Accueil
             </a>
             
-            <a href="{{ url('/conseil') }}" class="text-gray-700 hover:text-purple-600 transition-colors">
+            <a href="{{ url('/conseil') }}" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
                <i class="fas fa-lightbulb"></i> Conseils
            </a>
             @auth
-            <a href="{{ url('/my-applications') }}" class="text-gray-700 hover:text-purple-600 transition-colors">
+            <a href="{{ url('/my-applications') }}" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
                 <i class="fas fa-file-alt mr-1"></i> Mes candidatures
             </a>
             <a href="{{ url('/profile') }}" class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full hover:bg-purple-200 transition-colors">
@@ -108,8 +108,8 @@
             @endauth
         <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="text-red-600 hover:text-red-800 font-semibold transition-colors">
-            🔌 Déconnexion
+        <button type="submit" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
+      <i class="fas fa-power-off mr-2"></i> Déconnexion    
         </button>
     </form>
         </div>
@@ -522,14 +522,15 @@
             // Animation de la carte
             const map = document.querySelector('.senegal-map');
             if (map) {
-                map.style.opacity = '0';
-                map.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    map.style.transform = 'scale(1)';
-                    map.style.opacity = '1';
-                }, 500);
-            }
-            
+             map.style.opacity = '0';
+             map.style.transform = 'scale(0.95)';
+             map.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out'; // Ajout d'une transition CSS pour fluidité
+    
+            setTimeout(() => {
+            map.style.transform = 'scale(1)';
+            map.style.opacity = '1';
+            }, 80); // Réduction du délai (100ms au lieu de 500ms)
+             }
             // Débogage du formulaire et assurer la soumission
             const offerForm = document.getElementById('offerForm');
             if (offerForm) {
