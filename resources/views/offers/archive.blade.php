@@ -105,7 +105,7 @@
                     <h3 class="font-bold text-lg text-purple-800 mb-4 flex items-center">
                         <i class="fas fa-filter mr-2 text-purple-600"></i> Filtres
                     </h3>
-                    <form id="filter-form"> {{-- Ajout de l'ID pour le JS --}}
+                    <form id="filter-form" method="GET" action="{{ route('offers.archive') }}"> {{-- Ajout de l'action et méthode --}}
                         <div class="space-y-4">
                             <div>
                                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type d'offre</label>
@@ -341,14 +341,8 @@
             });
         });
 
-        // Filtrage des offres
-        document.getElementById('filter-form')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const params = new URLSearchParams(formData).toString();
-            // Important : assurez-vous que cette route correspond à votre route d'archives
-            window.location.href = '{{ route("offers.archive") }}?' + params; 
-        });
+        // Filtrage des offres - soumission normale du formulaire
+        // Le formulaire se soumet automatiquement avec la méthode GET vers la bonne URL
 
         // Tri des offres
         document.getElementById('sort-by')?.addEventListener('change', function() {

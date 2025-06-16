@@ -49,6 +49,8 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::get('/admin/offers/pending', [AdminController::class, 'pendingOffers'])->name('admin.offers.pending');
     Route::post('/admin/offers/{id}/validate', [AdminController::class, 'validateOffer'])->name('admin.offers.validate');
     Route::post('/admin/offers/{id}/reject', [AdminController::class, 'rejectOffer'])->name('admin.offers.reject');
+    Route::get('/admin/offers/{id}/edit', [AdminController::class, 'editOffer'])->name('admin.offers.edit');
+    Route::put('/admin/offers/{id}', [AdminController::class, 'updateOffer'])->name('admin.offers.update');
     Route::delete('/admin/users/{user}', [AdminController::class, 'destroy']) ->name('admin.users.destroy');
         Route::delete('/admin/offers/{id}', [AdminController::class, 'deleteOffer'])->name('admin.offers.delete');
 

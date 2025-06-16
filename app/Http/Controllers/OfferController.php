@@ -76,7 +76,7 @@ class OfferController extends Controller
         return redirect()->route('home')->with('success', $message);
     }
 
-     public function archive(Request $request) // Il est bon de passer Request pour les filtres futurs
+     public function archive(Request $request)
     {
         // On initialise la requête sur le modèle Offer
         $query = Offer::query();
@@ -84,15 +84,62 @@ class OfferController extends Controller
         // On applique les conditions : seules les offres validées ET publiées
         $query->where('is_validated', true)
               ->where('is_published', true);
+              
+        // Application des filtres sélectionnés par l'utilisateur
+        
+        // Filtre par type d'offre
+        if ($request->has('type') && $request->type !== 'Tous types') {
+            $query->where('type', $request->type);
+        }
+        
+        // Filtre par secteur d'activité
+        if ($request->has('sector') && $request->sector !== 'Tous secteurs') {
+            $query->where('sector', $request->sector);
+        }
+        
+        // Filtre par date limite
+        if ($request->has('deadline') && $request->deadline !== 'Toutes dates') {
+            switch($request->deadline) {
+                case 'Cette semaine':
+                    $query->whereBetween('deadline', [now(), now()->endOfWeek()]);
+                    break;
+                case 'Ce mois':
+                    $query->whereBetween('deadline', [now(), now()->endOfMonth()]);
+                    break;
+                case 'Prochains 3 mois':
+                    $query->whereBetween('deadline', [now(), now()->addMonths(3)]);
+                    break;
+            }
+        }
+        
+        // Tri des offres
+        if ($request->has('sort')) {
+            switch($request->sort) {
+                case 'date_desc':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'date_asc':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'budget_desc':
+                    $query->orderBy('budget', 'desc');
+                    break;
+                case 'budget_asc':
+                    $query->orderBy('budget', 'asc');
+                    break;
+                default:
+                    $query->orderBy('created_at', 'desc');
+            }
+        } else {
+            // Par défaut, on trie les résultats du plus récent au plus ancien
+            $query->orderBy('created_at', 'desc');
+        }
 
-        // On trie les résultats par date de création, du plus récent au plus ancien
-        $query->orderBy('created_at', 'desc');
+        // On pagine les résultats
+        $offers = $query->paginate(9)->appends($request->except('page')); // Ajoute les filtres aux liens de pagination
 
-        // On pagine les résultats (par exemple, 4 offres par page)
-        $offers = $query->paginate(4);
-
-        // On retourne la vue avec les offres paginées
-        return view('offers.archive', compact('offers'));// Assurez-vous que le chemin de votre vue est correct, ex: 'offers.archive' ou juste 'archive'
+        // On retourne la vue avec les offres paginées et les filtres sélectionnés
+        return view('offers.archive', compact('offers'));
     }
 
     public function conseil()

@@ -63,6 +63,11 @@
                             <button type="button" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none" onclick="toggleDetails('active-offer-details-{{ $offer->id }}')">
                                 <i class="fas fa-eye mr-1"></i> Détails
                             </button>
+                            
+                            <a href="{{ route('admin.offers.edit', $offer->id) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <i class="fas fa-edit mr-1"></i> Modifier
+                            </a>
+                            
                             <form action="{{ route('admin.offers.delete', $offer->id) }}" method="POST" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette offre active ?');">
                                 @csrf
                                 @method('DELETE')
