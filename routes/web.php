@@ -62,7 +62,9 @@ Route::get('/admin/offers/active', [AdminController::class, 'activeOffers'])->na
     Route::get('/admin/applications/{id}/download-cv', [AdminApplicationController::class, 'downloadCV'])->name('admin.applications.download-cv');
     Route::patch('/admin/applications/{id}/status', [AdminApplicationController::class, 'updateStatus'])->name('admin.applications.update-status');
 });
-
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok']);
+});
 // Route de déconnexion
 Route::post('/logout', function () {
     Auth::logout();
