@@ -85,14 +85,15 @@
             <a href="{{ route('offers.archive') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
                 <i class="fas fa-search mr-2"></i> Parcourir
             </a>
-           
+           @auth
            <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
       <i class="fas fa-power-off mr-2"></i> Déconnexion    
         </button>
     </form>
-        </div>
+      @endauth
+</div>
         <button class="md:hidden text-purple-700 focus:outline-none">
             <i class="fas fa-bars text-2xl"></i>
         </button>

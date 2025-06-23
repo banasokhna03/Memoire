@@ -137,6 +137,7 @@ class OfferController extends Controller
 
         // On pagine les résultats
         $offers = $query->paginate(9)->appends($request->except('page')); // Ajoute les filtres aux liens de pagination
+        $offers = $query->paginate(6);
 
         // On retourne la vue avec les offres paginées et les filtres sélectionnés
         return view('offers.archive', compact('offers'));

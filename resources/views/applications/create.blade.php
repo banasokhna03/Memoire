@@ -87,7 +87,7 @@
                     </div>
                     
                     <div>
-                        <label for="cv" class="block text-sm font-medium text-gray-700 mb-1">CV (PDF, DOC ou DOCX)</label>
+                        <label for="cv" class="block text-sm font-medium text-gray-700 mb-1">Document (PDF, DOC ou DOCX)</label>
                         <div class="relative">
                             <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100" required>
                         </div>

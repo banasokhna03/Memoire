@@ -12,7 +12,7 @@
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
 <a href="{{ url('/') }}" class="flex items-center space-x-2">
             <img class="mx-auto h-12 w-auto" src="{{ asset('images/logo.png') }}" alt="Logo">
-</a>             
+</a>
 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Connectez-vous à votre compte
             </h2>
@@ -23,27 +23,50 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                {{-- Affichage des messages d'erreur généraux (identifiants incorrects) --}}
+                @if ($errors->any())
+                    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Erreur !</strong>
+                        <span class="block sm:inline">
+                            @foreach ($errors->all() as $error)
+                                {{ $error }}
+                            @endforeach
+                        </span>
+                    </div>
+                @endif
+
                 <form class="space-y-6" action="{{ route('login') }}" method="POST">
                     @csrf
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
                         <div class="mt-1">
                             <input id="email" name="email" type="email" autocomplete="email" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm
+                                   @error('email') border-red-500 @enderror" {{-- Ajout de la classe d'erreur Tailwind --}}
+                                   value="{{ old('email') }}"> {{-- Pour conserver la valeur entrée précédemment --}}
                         </div>
+                        {{-- Message d'erreur spécifique au champ email --}}
+                        @error('email')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
                         <div class="mt-1">
                             <input id="password" name="password" type="password" autocomplete="current-password" required
-                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm
+                                   @error('password') border-red-500 @enderror"> {{-- Ajout de la classe d'erreur Tailwind --}}
                         </div>
+                        {{-- Message d'erreur spécifique au champ password --}}
+                        @error('password')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <input id="remember-me" name="remember-me" type="checkbox"
+                            <input id="remember-me" name="remember" type="checkbox" {{-- Changer 'remember-me' à 'remember' pour correspondre au Auth::attempt --}}
                                    class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
                             <label for="remember-me" class="ml-2 block text-sm text-gray-900">Se souvenir de moi</label>
                         </div>

@@ -102,13 +102,15 @@
         <button class="md:hidden text-purple-700 focus:outline-none">
             <i class="fas fa-bars text-2xl"></i>
         </button>
-      <form method="POST" action="{{ route('logout') }}">
+      @auth
+        <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
       <i class="fas fa-power-off mr-2"></i> Déconnexion    
         </button>
     </form>
-    </nav>
+    @endauth
+</nav>
 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
     @csrf
 </form>

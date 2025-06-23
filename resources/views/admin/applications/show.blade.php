@@ -1,8 +1,8 @@
 <?php
 $statusStyles = [
-    'pending' => 'background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;',
-    'accepted' => 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;',
-    'rejected' => 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'
+    'pending' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    'accepted' => 'bg-green-100 text-green-800 border-green-200',
+    'rejected' => 'bg-red-100 text-red-800 border-red-200'
 ];
 
 $statusLabels = [
@@ -13,98 +13,22 @@ $statusLabels = [
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Détails de la candidature</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails candidature - Appel d'Offres Sénégal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            color: #333;
+        .info-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
         }
-        h1, h2, h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        a {
-            color: #3490dc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        .header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .content {
-            padding: 20px;
-        }
-        .section {
-            margin-bottom: 25px;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 15px;
-            background-color: #fff;
-        }
-        .section-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-        .info-item {
-            margin-bottom: 10px;
-        }
-        .info-label {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 3px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            text-decoration: none;
-            color: #333;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background-color: #3490dc;
-            border-color: #3490dc;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #2779bd;
-        }
-        .status-dropdown {
-            position: relative;
-            display: inline-block;
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .status-dropdown-content {
             display: none;
@@ -113,144 +37,174 @@ $statusLabels = [
             min-width: 200px;
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            border-radius: 0.5rem;
             z-index: 10;
-        }
-        .status-form {
-            display: block;
-            padding: 8px 15px;
-        }
-        .status-form button {
-            background: none;
-            border: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            padding: 8px;
-            font-size: 14px;
-        }
-        .status-pending button:hover {
-            background-color: #fff3cd;
-        }
-        .status-accepted button:hover {
-            background-color: #d4edda;
-        }
-        .status-rejected button:hover {
-            background-color: #f8d7da;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div>
-                <h1>Détails de la candidature</h1>
-                <p>Soumise le {{ $application->created_at->format('d/m/Y à H:i') }}</p>
-            </div>
-            <a href="{{ route('admin.applications.index') }}" class="btn">Retour à la liste</a>
+<body class="bg-gray-50 text-purple-900 font-sans">
+    <!-- Header -->
+    <nav class="bg-white shadow-lg py-3 px-6 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-2">
+            <a href="{{ url('/') }}" class="flex items-center space-x-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto">
+                <span class="text-xl font-bold text-green-600">AppelOffres<span class="text-purple-700">SN</span></span>
+            </a>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="{{ route('admin.dashboard') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
+                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+            </a>
+            @auth
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-purple-600 hover:text-red-800 font-semibold transition-colors">
+                        <i class="fas fa-power-off mr-2"></i> Déconnexion
+                    </button>
+                </form>
+            @endauth
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-purple-900 flex items-center">
+                <i class="fas fa-user-tie mr-3 text-purple-600"></i> Détails de la candidature
+            </h1>
+            <a href="{{ route('admin.applications.index') }}" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Retour
+            </a>
         </div>
 
-        <div class="content">
-            <!-- Statut -->
-            <div class="section">
-                <h3 class="section-title">Statut de la candidature</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="status-badge" style="{{ $statusStyles[$application->status] }}">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8 info-card">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">{{ $application->user ? $application->user->name : 'Utilisateur supprimé' }}</h2>
+                    <p class="text-gray-500 text-sm mt-1">Soumise le {{ $application->created_at->format('d/m/Y à H:i') }}</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $statusStyles[$application->status] }}">
                         {{ $statusLabels[$application->status] }}
                     </span>
                     
-                    <div class="status-dropdown">
-                        <button class="btn btn-primary" onclick="toggleStatusMenu()">
-                            Modifier le statut
+                    <div class="relative">
+                        <button onclick="toggleStatusMenu()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                            <i class="fas fa-edit mr-2"></i> Modifier
                         </button>
-                        <div id="statusDropdown" class="status-dropdown-content">
-                            <form class="status-form status-pending" method="POST" action="{{ route('admin.applications.update-status', $application->id) }}">
+                        <div id="statusDropdown" class="status-dropdown-content mt-1">
+                            <form method="POST" action="{{ route('admin.applications.update-status', $application->id) }}" class="p-2 hover:bg-yellow-50">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="pending">
-                                <button type="submit">Marquer comme En attente</button>
+                                <button type="submit" class="w-full text-left text-yellow-800 flex items-center">
+                                    <i class="fas fa-clock mr-2"></i> En attente
+                                </button>
                             </form>
-                            <form class="status-form status-accepted" method="POST" action="{{ route('admin.applications.update-status', $application->id) }}">
+                            <form method="POST" action="{{ route('admin.applications.update-status', $application->id) }}" class="p-2 hover:bg-green-50">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="accepted">
-                                <button type="submit">Marquer comme Acceptée</button>
+                                <button type="submit" class="w-full text-left text-green-800 flex items-center">
+                                    <i class="fas fa-check mr-2"></i> Accepter
+                                </button>
                             </form>
-                            <form class="status-form status-rejected" method="POST" action="{{ route('admin.applications.update-status', $application->id) }}">
+                            <form method="POST" action="{{ route('admin.applications.update-status', $application->id) }}" class="p-2 hover:bg-red-50">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="rejected">
-                                <button type="submit">Marquer comme Refusée</button>
+                                <button type="submit" class="w-full text-left text-red-800 flex items-center">
+                                    <i class="fas fa-times mr-2"></i> Refuser
+                                </button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Informations sur le candidat -->
-            <div class="section">
-                <h3 class="section-title">Informations sur le candidat</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Nom</div>
-                        <div>{{ $application->user ? $application->user->name : 'Utilisateur supprimé' }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Email</div>
-                        <div>{{ $application->user ? $application->user->email : 'N/A' }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Téléphone</div>
-                        <div>{{ $application->phone ?? 'Non spécifié' }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">CV</div>
+
+            <div class="p-6">
+                <!-- Informations candidat -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-purple-800 mb-4 flex items-center">
+                        <i class="fas fa-user-circle mr-2 text-purple-600"></i> Informations candidat
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            @if($application->cv_path)
-                                <a href="{{ route('admin.applications.download-cv', $application->id) }}">
-                                    Télécharger le CV
-                                </a>
-                            @else
-                                <span style="color: #6c757d;">Aucun CV fourni</span>
-                            @endif
+                            <p class="text-sm text-gray-500">Nom complet</p>
+                            <p class="font-medium">{{ $application->user ? $application->user->name : 'Utilisateur supprimé' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Email</p>
+                            <p class="font-medium">{{ $application->user ? $application->user->email : 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Téléphone</p>
+                            <p class="font-medium">{{ $application->phone ?? 'Non spécifié' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">CV</p>
+                            <p class="font-medium">
+                                @if($application->cv_path)
+                                    <a href="{{ route('admin.applications.download-cv', $application->id) }}" class="text-purple-600 hover:text-purple-800 flex items-center">
+                                        <i class="fas fa-file-pdf mr-2"></i> Télécharger le CV
+                                    </a>
+                                @else
+                                    <span class="text-gray-400">Aucun CV fourni</span>
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Offre concernée -->
-            <div class="section">
-                <h3 class="section-title">Offre concernée</h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Titre de l'offre</div>
-                        <div><strong>{{ $application->offer->title ?? 'N/A' }}</strong></div>
+
+                <!-- Offre concernée -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-purple-800 mb-4 flex items-center">
+                        <i class="fas fa-briefcase mr-2 text-purple-600"></i> Offre concernée
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Titre de l'offre</p>
+                            <p class="font-medium">{{ $application->offer->title ?? 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Entreprise</p>
+                            <p class="font-medium">{{ $application->offer->company_name ?? 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Date limite</p>
+                            <p class="font-medium">
+                                {{ $application->offer->deadline ? \Carbon\Carbon::parse($application->offer->deadline)->format('d/m/Y') : 'Non spécifiée' }}
+                            </p>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Entreprise</div>
-                        <div>{{ $application->offer->company_name ?? 'N/A' }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Date limite de l'offre</div>
-                        <div>{{ $application->offer->deadline ? \Carbon\Carbon::parse($application->offer->deadline)->format('d/m/Y') : 'Non spécifiée' }}</div>
+                    @if($application->offer)
+                        <a href="{{ route('offers.show', $application->offer->id) }}" target="_blank" class="text-purple-600 hover:text-purple-800 flex items-center">
+                            <i class="fas fa-external-link-alt mr-2"></i> Voir l'offre complète
+                        </a>
+                    @endif
+                </div>
+
+                <!-- Lettre de motivation -->
+                <div>
+                    <h3 class="text-lg font-semibold text-purple-800 mb-4 flex items-center">
+                        <i class="fas fa-envelope-open-text mr-2 text-purple-600"></i> Lettre de motivation
+                    </h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="whitespace-pre-wrap">{{ $application->cover_letter }}</p>
                     </div>
                 </div>
-                @if($application->offer)
-                    <div style="margin-top: 10px;">
-                        <a href="{{ route('offers.show', $application->offer->id) }}" target="_blank">
-                            Voir l'offre complète
-                        </a>
-                    </div>
-                @endif
-            </div>
-            
-            <!-- Lettre de motivation -->
-            <div class="section">
-                <h3 class="section-title">Lettre de motivation</h3>
-                <div style="white-space: pre-wrap;">{{ $application->cover_letter }}</div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-purple-900 text-white pt-12 pb-6 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="border-t border-purple-800 mt-8 pt-6 text-center text-purple-300 text-sm">
+                <p>© {{ date('Y') }} AppelOffresSN. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         function toggleStatusMenu() {
@@ -274,6 +228,24 @@ $statusLabels = [
                 }
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation pour les cartes
+            const infoCards = document.querySelectorAll('.info-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            infoCards.forEach(card => {
+                observer.observe(card);
+            });
+        });
     </script>
 </body>
 </html>

@@ -125,24 +125,27 @@
             </h2>
             <div class="relative">
                 <!-- Carte SVG du Sénégal -->
-                <svg viewBox="0 0 500 500" class="w-full h-auto senegal-map flag-wave">
-                    <!-- Contour du pays -->
-                    <path d="M100,100 L400,100 L400,400 L100,400 Z" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+                    <!-- Image de la carte du Sénégal -->
+                    <img src ="{{ asset('images/Capture.png') }}" width="500" height="500"  preserveAspectRatio="xMidYMid meet"/>
                     
-                    <!-- Bandes du drapeau -->
-                    <rect x="100" y="100" width="300" height="100" fill="#00853f"/> <!-- Vert -->
-                    <rect x="100" y="200" width="300" height="100" fill="#fcd116"/> <!-- Jaune -->
-                    <rect x="100" y="300" width="300" height="100" fill="#ce1126"/> <!-- Rouge -->
-                    
-                    <!-- Étoile verte -->
-                    <polygon points="250,200 260,230 290,230 270,250 280,280 250,260 220,280 230,250 210,230 240,230" 
-                             fill="#00853f" stroke="#00853f" stroke-width="1"/>
-                    
-                    
+                    <!-- Points interactifs pour les régions -->
+                    <circle cx="120" cy="150" r="5" class="region-point" fill="#6d28d9" data-region="Dakar"/>
+                    <circle cx="100" cy="180" r="5" class="region-point" fill="#6d28d9" data-region="Thiès"/>
+                    <circle cx="80" cy="100" r="5" class="region-point" fill="#6d28d9" data-region="Saint-Louis"/>
+                    <circle cx="400" cy="400" r="5" class="region-point" fill="#6d28d9" data-region="Ziguinchor"/>
+                    <circle cx="150" cy="200" r="5" class="region-point" fill="#6d28d9" data-region="Diourbel"/>
+                    <circle cx="180" cy="250" r="5" class="region-point" fill="#6d28d9" data-region="Fatick"/>
+                    <circle cx="200" cy="280" r="5" class="region-point" fill="#6d28d9" data-region="Kaolack"/>
+                    <circle cx="220" cy="220" r="5" class="region-point" fill="#6d28d9" data-region="Kaffrine"/>
+                    <circle cx="300" cy="300" r="5" class="region-point" fill="#6d28d9" data-region="Tambacounda"/>
+                    <circle cx="320" cy="280" r="5" class="region-point" fill="#6d28d9" data-region="Kédougou"/>
+                    <circle cx="90" cy="150" r="5" class="region-point" fill="#6d28d9" data-region="Louga"/>
+                    <circle cx="250" cy="180" r="5" class="region-point" fill="#6d28d9" data-region="Matam"/>
+                    <circle cx="380" cy="350" r="5" class="region-point" fill="#6d28d9" data-region="Sédhiou"/>
+                    <circle cx="350" cy="380" r="5" class="region-point" fill="#6d28d9" data-region="Kolda"/>
                     
                     <!-- Légende -->
-                    <text x="100" y="450" font-size="12" fill="#333">Les couleurs représentent le drapeau sénégalais</text>
-                </svg>
+                    <text x="100" y="450" font-size="12" fill="#333">Cliquez sur les points pour voir les régions</text>
                 
                 <!-- Info région au survol -->
                 <div id="region-info" class="hidden absolute top-0 left-0 bg-white p-2 rounded shadow-lg text-sm font-medium"></div>
@@ -283,7 +286,7 @@
                                 </select>
                             </div>
                             
-                            <div>
+                            <div style="display: none;">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Budget estimé (FCFA)</label>
                                 <input type="number" name="budget" 
                                        class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none"

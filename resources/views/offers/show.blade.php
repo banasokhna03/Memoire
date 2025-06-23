@@ -13,15 +13,12 @@
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
-    <!-- Navbar -->
     <nav class="bg-white shadow-lg py-3 px-6 flex justify-between items-center sticky top-0 z-50">
-        <!-- Logo -->
         <div class="flex items-center space-x-2">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto">
             <span class="text-xl font-bold text-green-600">AppelOffres<span class="text-purple-700">SN</span></span>
         </div>
 
-        <!-- Boutons -->
         <div class="hidden md:flex items-center space-x-6">
             <a href="{{ url('/') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
                 <i class="fas fa-home mr-2"></i> Accueil
@@ -34,24 +31,19 @@
             </a>
         </div>
         
-        <!-- Menu mobile -->
         <button class="md:hidden text-purple-700 focus:outline-none">
             <i class="fas fa-bars text-2xl"></i>
         </button>
     </nav>
 
-    <!-- Contenu principal -->
     <main class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <!-- Bouton retour -->
         <div class="mb-6">
             <a href="{{ url('/') }}" class="inline-flex items-center text-purple-700 hover:text-purple-900 transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i> Retour aux offres
             </a>
         </div>
 
-        <!-- Détails de l'offre -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <!-- En-tête de l'offre -->
             <div class="p-6 border-b border-gray-200">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center">
                     <div>
@@ -82,14 +74,12 @@
                 </div>
             </div>
 
-            <!-- Corps de l'offre -->
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Colonne principale avec description -->
                     <div class="md:col-span-2 space-y-8">
                         <div>
                             <h2 class="text-xl font-semibold text-purple-900 mb-4">Description de l'offre</h2>
-                            <div class="prose max-w-none text-gray-700">
+                            <div class="prose max-w-none text-gray-700 text-justify"> {{-- Ajout de text-justify ici --}}
                                 {!! nl2br(e($offer->description)) !!}
                             </div>
                         </div>
@@ -104,13 +94,12 @@
                         </div>
                     </div>
 
-                    <!-- Colonne latérale avec informations supplémentaires -->
                     <div class="space-y-6">
-                        <!-- Détails de l'offre -->
                         <div class="bg-gray-50 p-5 rounded-lg">
                             <h3 class="text-lg font-semibold text-purple-900 mb-3">Détails de l'offre</h3>
                             <ul class="space-y-3">
-                                @if($offer->budget)
+                                {{-- Le bloc budget a été masqué précédemment --}}
+                                {{-- @if($offer->budget)
                                 <li class="flex items-start">
                                     <i class="fas fa-money-bill-wave text-purple-600 mt-1 mr-3"></i>
                                     <div>
@@ -118,7 +107,7 @@
                                         <span class="text-gray-900">{{ number_format($offer->budget, 0, ',', ' ') }} FCFA</span>
                                     </div>
                                 </li>
-                                @endif
+                                @endif --}}
                                 <li class="flex items-start">
                                     <i class="fas fa-calendar-alt text-purple-600 mt-1 mr-3"></i>
                                     <div>
@@ -136,7 +125,6 @@
                             </ul>
                         </div>
 
-                        <!-- Coordonnées de l'entreprise -->
                         <div class="bg-gray-50 p-5 rounded-lg">
                             <h3 class="text-lg font-semibold text-purple-900 mb-3">Contact</h3>
                             <ul class="space-y-3">
@@ -164,7 +152,6 @@
                             </ul>
                         </div>
 
-                        <!-- Bouton de candidature -->
                         <div class="text-center">
                             @auth
                                 <a href="{{ route('applications.create', $offer->id) }}" class="block w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
@@ -183,11 +170,9 @@
             </div>
         </div>
 
-        <!-- Autres offres similaires (optionnel) -->
         <div class="mt-12">
             <h2 class="text-xl font-bold text-purple-900 mb-6">Offres similaires</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cette section pourrait être remplie dynamiquement avec des offres similaires -->
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-5">
                     <p class="text-sm text-gray-500">Cette fonctionnalité sera bientôt disponible</p>
                 </div>
@@ -195,7 +180,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-purple-900 text-white pt-12 pb-6 mt-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="border-t border-purple-800 mt-8 pt-6 text-center text-purple-300 text-sm">
