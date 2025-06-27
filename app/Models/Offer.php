@@ -18,7 +18,8 @@ class Offer extends Model
         'is_validated',
         'is_published',     // Pour distinguer les brouillons des offres publiées
         'type',
-        'sector',
+        'sector',           // Ancien champ (pour compatibilité)
+        'activity_sector_id', // Nouvelle référence vers le secteur d'activité
         'region',
         'budget',
         'duration',         // Durée du projet
@@ -44,6 +45,14 @@ class Offer extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    
+    /**
+     * Relation avec le secteur d'activité.
+     */
+    public function activitySector()
+    {
+        return $this->belongsTo(ActivitySector::class);
     }
 
     /**

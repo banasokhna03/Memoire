@@ -120,6 +120,7 @@
                             </button>
                             <div x-show="systemOpen" class="mt-1 space-y-1 pl-12">
                                 <a href="#" @click="currentTab = 'settings'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Paramètres</a>
+                                <a href="{{ route('admin.activity-sectors.index') }}" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Secteurs d'activité</a>
                                 <a href="#" @click="currentTab = 'backup'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Sauvegarde</a>
                                 <a href="#" @click="currentTab = 'audit'" class="block px-4 py-2 text-sm text-purple-200 hover:bg-purple-600 rounded">Journal d'audit</a>
                             </div>

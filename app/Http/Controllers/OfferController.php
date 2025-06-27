@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Offer;
+use App\Models\ActivitySector;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,8 @@ class OfferController extends Controller
 {
     public function create()
     {
-        return view('offers.create');
+        $activitySectors = ActivitySector::where('is_active', true)->orderBy('name')->get();
+        return view('offers.create', compact('activitySectors'));
     }
 
     public function index()

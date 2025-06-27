@@ -272,17 +272,11 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité *</label>
-                                <select name="sector" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
+                                <select name="activity_sector_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 input-highlight focus:outline-none">
                                     <option value="">Sélectionnez un secteur...</option>
-                                    <option value="informatique">Informatique & Télécommunications</option>
-                                    <option value="construction">Construction & BTP</option>
-                                    <option value="sante">Santé</option>
-                                    <option value="energie">Énergie</option>
-                                    <option value="agriculture">Agriculture</option>
-                                    <option value="transport">Transport & Logistique</option>
-                                    <option value="finance">Services Financiers</option>
-                                    <option value="education">Éducation & Formation</option>
-                                    <option value="autre">Autre</option>
+                                    @foreach($activitySectors as $sector)
+                                        <option value="{{ $sector->id }}">{{ $sector->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             

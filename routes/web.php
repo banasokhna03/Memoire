@@ -41,6 +41,19 @@ Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])->group(
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/utilisateurs', [AdminController::class, 'users'])->name('admin.users');
     
+    // Routes pour la gestion des secteurs d'activité
+    Route::resource('admin/activity-sectors', \App\Http\Controllers\ActivitySectorController::class, [
+        'names' => [
+            'index' => 'admin.activity-sectors.index',
+            'create' => 'admin.activity-sectors.create',
+            'store' => 'admin.activity-sectors.store',
+            'show' => 'admin.activity-sectors.show',
+            'edit' => 'admin.activity-sectors.edit',
+            'update' => 'admin.activity-sectors.update',
+            'destroy' => 'admin.activity-sectors.destroy'
+        ]
+    ]);
+    
     // Nouvelle route pour la modification d'utilisateur
     Route::put('/admin/users/{user}', [AdminController::class, 'update'])->name('admin.users.update');
     // Route pour afficher le formulaire de modification d'utilisateur
