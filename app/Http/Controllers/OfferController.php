@@ -16,13 +16,56 @@ class OfferController extends Controller
         return view('offers.create', compact('activitySectors'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $offers = Offer::where('is_validated', true)
-                      ->where('is_published', true)
-                      ->limit(4)
-                      ->get();
-        return view('offers.index', compact('offers'));
+        // Commencer la requête pour les offres actives
+        $query = Offer::where('is_validated', true)
+                     ->where('is_published', true);
+        
+        // Filtre par type d'offre
+        if ($request->has('type') && $request->type !== 'Tous types') {
+            $query->where('type', $request->type);
+        }
+        
+        // Filtre par secteur d'activité
+        if ($request->has('sector') && $request->sector !== 'Tous secteurs') {
+            $query->where('activity_sector_id', $request->sector);
+        }
+        
+        // Filtre par date limite
+        if ($request->has('deadline') && $request->deadline !== 'Toutes dates') {
+            $today = Carbon::now()->startOfDay();
+            
+            switch($request->deadline) {
+                case 'Cette semaine':
+                    $endOfWeek = Carbon::now()->endOfWeek();
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $endOfWeek);
+                    break;
+                case 'Ce mois':
+                    $endOfMonth = Carbon::now()->endOfMonth();
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $endOfMonth);
+                    break;
+                case 'Prochains 3 mois':
+                    $threeMonths = Carbon::now()->addMonths(3);
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $threeMonths);
+                    break;
+            }
+        }
+        
+        // Paginer les offres et ajouter les paramètres de filtre à la pagination
+        $offers = $query->orderBy('created_at', 'desc')
+                      ->paginate(6)
+                      ->appends($request->except('page'));
+        
+        // Récupérer les secteurs d'activité actifs
+        $activitySectors = ActivitySector::where('is_active', true)
+                                         ->orderBy('name')
+                                         ->get();
+        
+        return view('offers.index', compact('offers', 'activitySectors'));
     }
 
     /**
@@ -96,20 +139,28 @@ class OfferController extends Controller
         
         // Filtre par secteur d'activité
         if ($request->has('sector') && $request->sector !== 'Tous secteurs') {
-            $query->where('sector', $request->sector);
+            $query->where('activity_sector_id', $request->sector);
         }
         
         // Filtre par date limite
         if ($request->has('deadline') && $request->deadline !== 'Toutes dates') {
+            $today = Carbon::now()->startOfDay();
+            
             switch($request->deadline) {
                 case 'Cette semaine':
-                    $query->whereBetween('deadline', [now(), now()->endOfWeek()]);
+                    $endOfWeek = Carbon::now()->endOfWeek();
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $endOfWeek);
                     break;
                 case 'Ce mois':
-                    $query->whereBetween('deadline', [now(), now()->endOfMonth()]);
+                    $endOfMonth = Carbon::now()->endOfMonth();
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $endOfMonth);
                     break;
                 case 'Prochains 3 mois':
-                    $query->whereBetween('deadline', [now(), now()->addMonths(3)]);
+                    $threeMonths = Carbon::now()->addMonths(3);
+                    $query->whereDate('deadline', '>=', $today)
+                          ->whereDate('deadline', '<=', $threeMonths);
                     break;
             }
         }
@@ -141,8 +192,13 @@ class OfferController extends Controller
         $offers = $query->paginate(9)->appends($request->except('page')); // Ajoute les filtres aux liens de pagination
         $offers = $query->paginate(6);
 
-        // On retourne la vue avec les offres paginées et les filtres sélectionnés
-        return view('offers.archive', compact('offers'));
+        // Récupérer les secteurs d'activité actifs pour le filtre
+        $activitySectors = ActivitySector::where('is_active', true)
+                                     ->orderBy('name')
+                                     ->get();
+   
+        // On retourne la vue avec les offres paginées, les filtres sélectionnés et les secteurs d'activité
+        return view('offers.archive', compact('offers', 'activitySectors'));
     }
 
     public function conseil()

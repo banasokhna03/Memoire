@@ -121,11 +121,9 @@
                                 <label for="sector" class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
                                 <select id="sector" name="sector" class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
                                     <option value="Tous secteurs" {{ request('sector') == 'Tous secteurs' ? 'selected' : '' }}>Tous secteurs</option>
-                                    <option value="BTP" {{ request('sector') == 'BTP' ? 'selected' : '' }}>BTP</option>
-                                    <option value="Informatique" {{ request('sector') == 'Informatique' ? 'selected' : '' }}>Informatique</option>
-                                    <option value="Santé" {{ request('sector') == 'Santé' ? 'selected' : '' }}>Santé</option>
-                                    <option value="Éducation" {{ request('sector') == 'Éducation' ? 'selected' : '' }}>Éducation</option>
-                                    {{-- Ajoutez d'autres options de secteur si nécessaire --}}
+                                    @foreach($activitySectors as $sector)
+                                        <option value="{{ $sector->id }}" {{ request('sector') == $sector->id ? 'selected' : '' }}>{{ $sector->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>
