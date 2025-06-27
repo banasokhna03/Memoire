@@ -140,8 +140,8 @@ $statusLabels = [
                                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Offre</th>
                                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                 <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CV</th>
-                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOC</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"><center>Actions</center></th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -176,7 +176,7 @@ $statusLabels = [
                                         @endif
                                     </td>
                                     <td class="px-4 py-4 whitespace-normal text-sm font-medium">
-                                        <div class="flex flex-wrap gap-2">
+                                        <div class="flex flex-nowrap gap-4 min-w-[260px]">
                                             <a href="{{ route('admin.applications.show', $application->id) }}" class="text-purple-600 hover:text-purple-900 whitespace-nowrap">
                                                 <i class="fas fa-eye mr-1"></i> Détails
                                             </a>
