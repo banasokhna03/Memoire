@@ -126,15 +126,15 @@
                     Accédez aux appels d'offres publics et privés en quelques clics
                 </p>
                 <center>
-                    <form class="w-full max-w-3xl bg-white rounded-full search-box animate__animated animate__fadeInUp animate__delay-1s">
+                    <form method="GET" action="{{ route('offers.index') }}" class="w-full max-w-3xl bg-white rounded-full search-box animate__animated animate__fadeInUp animate__delay-1s">
                         <div class="flex flex-col md:flex-row">
                             <div class="flex-1 flex items-center px-6 py-4">
                                 <i class="fas fa-search text-purple-500 mr-3"></i>
-                                <input type="text" placeholder="Mots-clés, secteurs..." class="w-full outline-none text-gray-700 placeholder-gray-400">
+                                <input type="text" name="keywords" value="{{ request('keywords') }}" placeholder="Mots-clés, secteurs..." class="w-full outline-none text-gray-700 placeholder-gray-400">
                             </div>
                             <div class="flex-1 flex items-center px-6 py-4 border-t md:border-t-0 md:border-l border-gray-200">
                                 <i class="fas fa-map-marker-alt text-purple-500 mr-3"></i>
-                                <input type="text" placeholder="Localisation, région..." class="w-full outline-none text-gray-700 placeholder-gray-400">
+                                <input type="text" name="region" value="{{ request('region') }}" placeholder="Localisation, région..." class="w-full outline-none text-gray-700 placeholder-gray-400">
                             </div>
                             <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-r-full font-semibold transition-colors">
                                 <i class="fas fa-search mr-2"></i> Rechercher
