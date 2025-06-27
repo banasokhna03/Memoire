@@ -193,39 +193,40 @@
                 <h3 class="font-bold text-lg text-purple-800 mb-4 flex items-center">
                     <i class="fas fa-filter mr-2 text-purple-600"></i> Filtres
                 </h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Type d'offre</label>
-                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
-                            <option>Tous types</option>
-                            <option>Public</option>
-                            <option>Privé</option>
-                            <option>International</option>
-                        </select>
+                <form id="filter-form" method="GET" action="{{ route('offers.index') }}">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type d'offre</label>
+                            <select id="type" name="type" class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                                <option value="Tous types" {{ request('type') == 'Tous types' ? 'selected' : '' }}>Tous types</option>
+                                <option value="public" {{ request('type') == 'public' ? 'selected' : '' }}>Public</option>
+                                <option value="prive" {{ request('type') == 'prive' ? 'selected' : '' }}>Privé</option>
+                                <option value="international" {{ request('type') == 'international' ? 'selected' : '' }}>International</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="sector" class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
+                            <select id="sector" name="sector" class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                                <option value="Tous secteurs" {{ request('sector') == 'Tous secteurs' ? 'selected' : '' }}>Tous secteurs</option>
+                                @foreach($activitySectors as $sector)
+                                    <option value="{{ $sector->id }}" {{ request('sector') == $sector->id ? 'selected' : '' }}>{{ $sector->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="deadline" class="block text-sm font-medium text-gray-700 mb-1">Date limite</label>
+                            <select id="deadline" name="deadline" class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
+                                <option value="Toutes dates" {{ request('deadline') == 'Toutes dates' ? 'selected' : '' }}>Toutes dates</option>
+                                <option value="Cette semaine" {{ request('deadline') == 'Cette semaine' ? 'selected' : '' }}>Cette semaine</option>
+                                <option value="Ce mois" {{ request('deadline') == 'Ce mois' ? 'selected' : '' }}>Ce mois</option>
+                                <option value="Prochains 3 mois" {{ request('deadline') == 'Prochains 3 mois' ? 'selected' : '' }}>Prochains 3 mois</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+                            <i class="fas fa-search mr-2"></i> Appliquer
+                        </button>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Secteur d'activité</label>
-                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
-                            <option>Tous secteurs</option>
-                            <option>BTP</option>
-                            <option>Informatique</option>
-                            <option>Santé</option>
-                            <option>Éducation</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date limite</label>
-                        <select class="w-full rounded-lg border-gray-300 text-purple-800 focus:ring-purple-500 focus:border-purple-500 text-sm">
-                            <option>Toutes dates</option>
-                            <option>Cette semaine</option>
-                            <option>Ce mois</option>
-                            <option>Prochains 3 mois</option>
-                        </select>
-                    </div>
-                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
-                        Appliquer
-                    </button>
-                </div>
+                </form>
             </div>
         </aside>
 

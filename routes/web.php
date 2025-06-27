@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [OfferController::class, 'index'])->name('home');
+Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
 
 // Routes publiques d'authentification
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
