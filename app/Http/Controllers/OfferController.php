@@ -22,6 +22,21 @@ class OfferController extends Controller
         $query = Offer::where('is_validated', true)
                      ->where('is_published', true);
         
+        // Recherche par mots-clés (recherche dans le titre et la description)
+        if ($request->has('keywords') && !empty($request->keywords)) {
+            $keywords = '%' . $request->keywords . '%';
+            $query->where(function($q) use ($keywords) {
+                $q->where('title', 'like', $keywords)
+                  ->orWhere('description', 'like', $keywords)
+                  ->orWhere('required_skills', 'like', $keywords);
+            });
+        }
+        
+        // Recherche par région
+        if ($request->has('region') && !empty($request->region)) {
+            $query->where('region', 'like', '%' . $request->region . '%');
+        }
+        
         // Filtre par type d'offre
         if ($request->has('type') && $request->type !== 'Tous types') {
             $query->where('type', $request->type);
