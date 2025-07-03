@@ -87,7 +87,7 @@
     <footer class="bg-purple-900 text-white py-8 mt-12">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="border-t border-purple-800 mt-8 pt-6 text-center text-purple-300 text-sm">
-                <p>© 2023 AppelOffresSN. Tous droits réservés.</p>
+                <p>© {{ date('Y') }} AppelOffresSN. Tous droits réservés.</p>
             </div>
         </div>
     </footer>

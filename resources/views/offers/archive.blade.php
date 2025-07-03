@@ -303,7 +303,7 @@
                 </div>
             </div>
             <div class="border-t border-purple-800 mt-8 pt-6 text-center text-purple-300 text-sm">
-                <p>© 2023 AppelOffresSN. Tous droits réservés.</p>
+                <p>© {{ date('Y') }} AppelOffresSN. Tous droits réservés.</p>
             </div>
         </div>
     </footer>

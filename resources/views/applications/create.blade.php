@@ -29,9 +29,11 @@
             <a href="{{ url('/publish-offer') }}" class="text-purple-700 hover:text-purple-900 text-white font-semibold px-5 py-2 rounded-full transition-all flex items-center">
                 <i class="fas fa-bullhorn mr-2"></i> Publier une Offre
             </a>
-            <a href="{{ url('/login') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
-                <i class="fas fa-sign-in-alt mr-2"></i> Connexion
-            </a>
+   <a href="{{ route('logout') }}" 
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+       class="text-purple-700 hover:text-purple-900 text-white font-semibold px-5 py-2 rounded-full transition-all flex items-center">
+        Déconnexion
+    </a>
         </div>
         
         <!-- Menu mobile -->

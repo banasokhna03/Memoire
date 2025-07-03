@@ -72,7 +72,7 @@ class OfferController extends Controller
         
         // Paginer les offres et ajouter les paramètres de filtre à la pagination
         $offers = $query->orderBy('created_at', 'desc')
-                      ->paginate(6)
+                      ->paginate(5)
                       ->appends($request->except('page'));
         
         // Récupérer les secteurs d'activité actifs
