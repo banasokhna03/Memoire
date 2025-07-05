@@ -40,12 +40,13 @@
         <!-- Sidebar Navigation -->
         <div class="hidden md:flex md:flex-shrink-0">
             <div class="flex flex-col w-64 bg-purple-800 border-r border-purple-700">
-                <div class="flex items-center h-16 px-4 bg-purple-900">
-<a href="{{ url('/') }}" class="flex items-center space-x-2">
-    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8 w-auto">
-</a>                    
-<span class="text-white font-bold">Admin Portal</span>
-                </div>
+              <div class="flex items-center h-16 px-4 bg-white">
+    <a href="{{ url('/') }}" class="flex items-center space-x-2">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8 w-auto">
+    </a>                    
+    <span class="text-black font-bold">Admin Portal</span>
+</div>
+
                 <div class="admin-nav flex-1 flex flex-col overflow-y-auto">
                     <nav class="flex-1 px-2 py-4 space-y-1">
                         <!-- Dashboard -->
