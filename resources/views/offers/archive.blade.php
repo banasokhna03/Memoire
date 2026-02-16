@@ -280,14 +280,7 @@
                             <i class="fas fa-map-marker-alt mr-3 text-purple-300"></i>
                             <span class="text-purple-200">Dakar, Sénégal</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">+221 33 123 45 67</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">contact@appeloffressn.sn</span>
-                        </li>
+                       
                     </ul>
                     <div class="mt-4 flex space-x-4">
                         <a href="#" class="text-purple-200 hover:text-white transition-colors text-xl">

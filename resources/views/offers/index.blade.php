@@ -71,7 +71,15 @@
             <a href="{{ route('offers.archive') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
         <i class="fas fa-search mr-2"></i> Parcourir offres
           </a>
-           <div class="flex items-center relative"> <div>
+
+          <a href="{{ route('chat.index') }}" class="group relative flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold hover:from-purple-600 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-purple-500/30">
+                <div class="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <i class="fas fa-robot mr-2 text-lg group-hover:animate-pulse"></i>
+                <span>Assistant IA</span>
+                <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></div>
+            </a>
+          <div class="flex items-center relative"> <div>
                         <label for="auth-select" class="block text-sm font-medium text-gray-700 sr-only">S'identifier</label>
 
                         <select name="auth_action" id="auth-select"
@@ -95,9 +103,7 @@
                              <p style="color:rgb(121, 71, 221);"> <i class="fas fa-user mr-2"></i>S'identifier </p>
                         </div>
                     </div>
-        <!--    <a href="{{ route('admin.dashboard') }}" class="text-purple-700 font-medium hover:text-purple-900 transition-colors flex items-center">
-                <i class="fas fa-user-shield mr-2"></i> Admin
-            </a>-->
+        
         </div>
         <button class="md:hidden text-purple-700 focus:outline-none">
             <i class="fas fa-bars text-2xl"></i>
@@ -303,7 +309,7 @@
                                         <form method="POST" action="{{ url('/save-offer/' . $offer->id) }}">
                                             @csrf
                                             <button type="submit" class="bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
-                                                <i class="far fa-bookmark mr-1"></i> Enregistrer
+                                                <i class="far fa-bookmark mr-1"></i> Favoris
                                             </button>
                                         </form>
                                     @endauth
@@ -349,14 +355,7 @@
                             <i class="fas fa-map-marker-alt mr-3 text-purple-300"></i>
                             <span class="text-purple-200">Dakar, Sénégal</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">+221 33 123 45 67</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">contact@appeloffressn.sn</span>
-                        </li>
+                       
                     </ul>
                     <div class="mt-4 flex space-x-4">
                         <a href="#" class="text-purple-200 hover:text-white transition-colors text-xl">

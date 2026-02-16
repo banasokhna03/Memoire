@@ -447,14 +447,11 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Contact</h3>
                     <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">contact@appeloffressn.sn</span>
+                       <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-purple-300"></i>
+                            <span class="text-purple-200">Dakar, Sénégal</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt mr-3 text-purple-300"></i>
-                            <span class="text-purple-200">+221 33 123 45 67</span>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>

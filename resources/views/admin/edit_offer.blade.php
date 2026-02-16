@@ -61,12 +61,20 @@
                     <label for="sector" class="block text-sm font-medium text-gray-700">Secteur *</label>
                     <select name="sector" id="sector" required
                         class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                        <option value="Informatique" {{ old('sector', $offer->sector) == 'Informatique' ? 'selected' : '' }}>Informatique</option>
+                        <option value="Informatique" {{ old('sector', $offer->sector) == 'Informatique & Telecoms' ? 'selected' : '' }}>Informatique & Telecoms</option>
                         <option value="Marketing" {{ old('sector', $offer->sector) == 'Marketing' ? 'selected' : '' }}>Marketing</option>
                         <option value="Finance" {{ old('sector', $offer->sector) == 'Finance' ? 'selected' : '' }}>Finance</option>
                         <option value="Santé" {{ old('sector', $offer->sector) == 'Santé' ? 'selected' : '' }}>Santé</option>
                         <option value="Éducation" {{ old('sector', $offer->sector) == 'Éducation' ? 'selected' : '' }}>Éducation</option>
-                        <option value="Autre" {{ old('sector', $offer->sector) == 'Autre' ? 'selected' : '' }}>Autre</option>
+                        <option value="Fournitures courantes" {{ old('sector', $offer->sector) == 'Fournitures courantes' ? 'selected' : '' }}>Fournitures courantes</option>
+                        <option value="Transport et logistique" {{ old('sector', $offer->sector) == 'Transport et logistique' ? 'selected' : '' }}>Transport et logistique</option>
+                        <option value="Hôtellerie, restauration et loisirs" {{ old('sector', $offer->sector) == 'Hôtellerie, restauration et loisirs' ? 'selected' : '' }}>Hôtellerie, restauration et loisirs</option>
+                        <option value="Industrie pharmaceutique" {{ old('sector', $offer->sector) == 'Industrie pharmaceutique' ? 'selected' : '' }}>Industrie pharmaceutique</option>
+                        <option value="Sécurité & Sureté" {{ old('sector', $offer->sector) == 'Sécurité & Sureté' ? 'selected' : '' }}>Sécurité & Sureté</option>
+                        <option value="Prestations intellectuelles" {{ old('sector', $offer->sector) == 'Prestations intellectuelles' ? 'selected' : '' }}>Prestations intellectuelles</option>
+                        <option value="BTP & Matériaux de construction" {{ old('sector', $offer->sector) == 'BTP & Matériaux de construction' ? 'selected' : '' }}>BTP & Matériaux de construction</option>
+                        <option value="Commerce" {{ old('sector', $offer->sector) == 'Commerce' ? 'selected' : '' }}>Commerce</option>
+
                     </select>
                     @error('sector')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

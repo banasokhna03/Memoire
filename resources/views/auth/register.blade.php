@@ -39,7 +39,7 @@
                     @endif
 
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Nom complet</label>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Prénom et Nom</label>
                         <div class="mt-1">
                             <input id="name" name="name" type="text" autocomplete="name" required
                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm @error('name') border-red-500 @enderror"

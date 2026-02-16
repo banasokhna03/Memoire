@@ -10,6 +10,9 @@
         .gradient-bg {
             background: linear-gradient(135deg, #6b21a8 0%, #4c1d95 100%);
         }
+    .custom-description {
+    line-height: 1.6;
+}
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
@@ -66,7 +69,7 @@
                         <form method="POST" action="{{ url('/save-offer/' . $offer->id) }}" class="mt-2">
                             @csrf
                             <button type="submit" class="bg-white hover:bg-purple-50 text-purple-700 border border-purple-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="far fa-bookmark mr-1"></i> Enregistrer cette offre
+                                <i class="far fa-bookmark mr-1"></i> Favoris
                             </button>
                         </form>
                         @endauth

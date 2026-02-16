@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserProfileController; 
 use App\Http\Controllers\AdminApplicationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', [OfferController::class, 'index'])->name('home');
 Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
@@ -84,3 +85,9 @@ Route::post('/logout', function () {
     Auth::logout();
     return redirect('/');
 })->name('logout');
+
+Route::get('/chat', function () {
+    return view('chat');
+})->name('chat.index');
+
+Route::post('/chat/send', [ChatController::class, 'ask']);
